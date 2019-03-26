@@ -1,5 +1,5 @@
-!classDefinition: #LuzAmarilla category: #Semaforo!
-DenotativeObjectMorph subclass: #LuzAmarilla
+!classDefinition: #SeñalDeAlto category: #Semaforo!
+DenotativeObjectMorph subclass: #SeñalDeAlto
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -7,11 +7,11 @@ DenotativeObjectMorph subclass: #LuzAmarilla
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'LuzAmarilla class' category: #Semaforo!
-LuzAmarilla class
+!classDefinition: 'SeñalDeAlto class' category: #Semaforo!
+SeñalDeAlto class
 	instanceVariableNames: ''!
 
-!LuzAmarilla class methodsFor: 'morph' stamp: 'HAW 3/25/2019 06:08:25'!
+!SeñalDeAlto class methodsFor: 'morph' stamp: 'ML 3/25/2019 20:58:55'!
 createMorph
 
 	^EllipseMorph new
@@ -19,66 +19,23 @@ createMorph
 		yourself! !
 
 
-!LuzAmarilla class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 20:58:09'!
+!SeñalDeAlto class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 20:58:55'!
 apagar
 	self color: Color black.! !
 
-!LuzAmarilla class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:27:50'!
+!SeñalDeAlto class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:49:08'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
 	morph := nil.! !
 
-!LuzAmarilla class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 20:58:46'!
-prender
-	self color: Color yellow.! !
-
-!LuzAmarilla class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:04:41'!
-titilar: vecesATitilar
-	vecesATitilar timesRepeat: [ self color: Color black.
-		(Delay for: 300 * millisecond) wait.
-		self color: Color yellow.
-		(Delay for: 300 * millisecond) wait.]! !
-
-
-!classDefinition: #LuzRoja category: #Semaforo!
-DenotativeObjectMorph subclass: #LuzRoja
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Semaforo'!
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'LuzRoja class' category: #Semaforo!
-LuzRoja class
-	instanceVariableNames: ''!
-
-!LuzRoja class methodsFor: 'morph' stamp: 'ML 3/25/2019 20:58:55'!
-createMorph
-
-	^EllipseMorph new
-		color: Color black;
-		yourself! !
-
-
-!LuzRoja class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 20:58:55'!
-apagar
-	self color: Color black.! !
-
-!LuzRoja class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:27:50'!
-initializeCollaboratorsFromFile
-	"Auto generated method for loading purposes - Do not modify it"
-
-	morph := nil.! !
-
-!LuzRoja class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:05:06'!
+!SeñalDeAlto class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:05:06'!
 prender
 	self color: Color red! !
 
 
-!classDefinition: #LuzVerde category: #Semaforo!
-DenotativeObjectMorph subclass: #LuzVerde
+!classDefinition: #SeñalDeAvance category: #Semaforo!
+DenotativeObjectMorph subclass: #SeñalDeAvance
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -86,11 +43,11 @@ DenotativeObjectMorph subclass: #LuzVerde
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'LuzVerde class' category: #Semaforo!
-LuzVerde class
+!classDefinition: 'SeñalDeAvance class' category: #Semaforo!
+SeñalDeAvance class
 	instanceVariableNames: ''!
 
-!LuzVerde class methodsFor: 'morph' stamp: 'ML 3/25/2019 20:59:22'!
+!SeñalDeAvance class methodsFor: 'morph' stamp: 'ML 3/25/2019 20:59:22'!
 createMorph
 
 	^EllipseMorph new
@@ -98,19 +55,55 @@ createMorph
 		yourself! !
 
 
-!LuzVerde class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 20:59:22'!
+!SeñalDeAvance class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 20:59:22'!
 apagar
 	self color: Color black.! !
 
-!LuzVerde class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:27:50'!
+!SeñalDeAvance class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:49:08'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
 	morph := nil.! !
 
-!LuzVerde class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:04:54'!
+!SeñalDeAvance class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:04:54'!
 prender
 	self color: Color green.! !
+
+
+!classDefinition: #SeñalDePrecaucion category: #Semaforo!
+DenotativeObjectMorph subclass: #SeñalDePrecaucion
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Semaforo'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SeñalDePrecaucion class' category: #Semaforo!
+SeñalDePrecaucion class
+	instanceVariableNames: ''!
+
+!SeñalDePrecaucion class methodsFor: 'morph' stamp: 'HAW 3/25/2019 06:08:25'!
+createMorph
+
+	^EllipseMorph new
+		color: Color black;
+		yourself! !
+
+
+!SeñalDePrecaucion class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 20:58:09'!
+apagar
+	self color: Color black.! !
+
+!SeñalDePrecaucion class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:49:09'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	morph := nil.! !
+
+!SeñalDePrecaucion class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 20:58:46'!
+prender
+	self color: Color yellow.! !
 
 
 !classDefinition: #UnSemaforo category: #Semaforo!
@@ -135,34 +128,41 @@ createMorph
 ! !
 
 
-!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:06:11'!
+!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:46:03'!
 apagar
-	LuzRoja apagar.
-	LuzVerde apagar.
-	LuzAmarilla apagar.! !
+	SeñalDeAlto apagar.
+	SeñalDeAvance apagar.
+	SeñalDePrecaucion apagar.! !
 
-!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:25:04'!
+!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:40:40'!
 avisarPrecaucionPorEncendido
-	LuzAmarilla titilar: 5.! !
+	5 timesRepeat: [ self titilarLuzAmarilla]! !
 
-!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:27:50'!
+!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:49:09'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
 	morph := nil.! !
 
-!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:27:34'!
+!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:46:03'!
 prender
 	self openInWorld.
-	self addMorph: LuzRoja.
-	self addMorph: LuzAmarilla.
-	self addMorph: LuzVerde.
-	LuzRoja prender.
-	LuzVerde prender.
-	LuzAmarilla prender.
+	self addMorph: SeñalDeAlto.
+	self addMorph: SeñalDePrecaucion.
+	self addMorph: SeñalDeAvance.
+	SeñalDeAlto prender.
+	SeñalDeAvance prender.
+	SeñalDePrecaucion prender.
 	self avisarPrecaucionPorEncendido.! !
 
-LuzAmarilla initializeAfterFileIn!
-LuzRoja initializeAfterFileIn!
-LuzVerde initializeAfterFileIn!
+!UnSemaforo class methodsFor: 'as yet unclassified' stamp: 'ML 3/25/2019 21:45:14'!
+titilarLuzAmarilla
+	SeñalDePrecaucion apagar.
+	(Delay for: 300 * millisecond) wait.
+	SeñalDePrecaucion prender.
+	(Delay for: 300 * millisecond) wait.! !
+
+SeñalDeAlto initializeAfterFileIn!
+SeñalDeAvance initializeAfterFileIn!
+SeñalDePrecaucion initializeAfterFileIn!
 UnSemaforo initializeAfterFileIn!
