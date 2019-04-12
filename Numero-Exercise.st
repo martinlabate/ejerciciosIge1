@@ -314,12 +314,14 @@ Object subclass: #Numero
 
 	self subclassResponsibility ! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:57:52'!
-dividirAEntero: unEntero
+!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:11:07'!
+dividirAEntero: aDividend
+
 	^ self subclassResponsibility .! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:58:29'!
-dividirAFraccion: unaFraccion
+!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:11:14'!
+dividirAFraccion: aDividend
+
 	^ self subclassResponsibility .! !
 
 !Numero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 22:48'!
@@ -327,12 +329,14 @@ invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:29:40'!
-multiplicarEntero: unEntero
+!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:13:58'!
+multiplicarAEntero: aMultiplier
+
 	^ self subclassResponsibility .! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:29:50'!
-multiplicarFraccion: unaFraccion
+!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:14:02'!
+multiplicarAFraccion: aMultiplier
+
 	^ self subclassResponsibility .! !
 
 !Numero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:37:13'!
@@ -340,20 +344,20 @@ negated
 	
 	^self * (Entero with: -1)! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:43:54'!
-restarAEntero: unEntero
+!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:59:04'!
+restarAEntero: aMinuend
 	^ self subclassResponsibility .! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:44:04'!
-restarAFraccion: unaFraccion
+!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:59:12'!
+restarAFraccion: aMinuend
 	^ self subclassResponsibility .! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:22:52'!
-sumarEntero: unEntero
+!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:58:03'!
+sumarAEntero: anAdder
 	^ self subclassResponsibility .! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:23:10'!
-sumarFraccion: unaFraccion
+!Numero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:57:58'!
+sumarAFraccion: anAdder
 	^ self subclassResponsibility .! !
 
 
@@ -398,16 +402,16 @@ Numero subclass: #Entero
 THIS CLASS HAS NO COMMENT!!!
 
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:26:54'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:05:46'!
 * aMultiplier 
 	
-	^ aMultiplier multiplicarEntero: self.
+	^ aMultiplier multiplicarAEntero: self.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:52:52'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:57:27'!
 + anAdder 
 
-	^ anAdder sumarEntero: self.! !
+	^ anAdder sumarAEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:40:36'!
 - aSubtrahend 
@@ -444,38 +448,38 @@ greatestCommonDivisorWith: anEntero
 	
 	^self class with: (value gcd: anEntero integerValue)! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:53:07'!
-multiplicarEntero: unEntero 
+!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:14:14'!
+multiplicarAEntero: aMultiplier
 
-	^self class with: value * unEntero integerValue.! !
+	^self class with: value * aMultiplier integerValue.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:52:40'!
-multiplicarFraccion: unaFraccion 
+!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:14:28'!
+multiplicarAFraccion: aMultiplier 
 
-	^self * (unaFraccion numerator) / unaFraccion denominator.
+	^self * (aMultiplier numerator) / aMultiplier denominator.
 	
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:40:25'!
-restarAEntero: unEntero
+!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:59:28'!
+restarAEntero: aMinuend
 	
-	^ self class with: unEntero integerValue - value.	! !
+	^ self class with: aMinuend integerValue - value.	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:47:31'!
-restarAFraccion: unaFraccion
+!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:59:45'!
+restarAFraccion: aMinuend
 	
-	^ unaFraccion numerator - (self * unaFraccion denominator) / unaFraccion denominator.
+	^ aMinuend numerator - (self * aMinuend denominator) / aMinuend denominator.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:17:19'!
-sumarEntero: unEntero 
+!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:57:27'!
+sumarAEntero: anAdder 
 	
-	^self class with: value + unEntero integerValue.! !
+	^self class with: anAdder integerValue + value.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:53:31'!
-sumarFraccion: unaFraccion	
+!Entero methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:15:46'!
+sumarAFraccion: anAdder
 
-		^(self value * unaFraccion denominator + unaFraccion numerator) / unaFraccion denominator.
+		^(self value * anAdder denominator + anAdder numerator) / anAdder denominator.
 
 ! !
 
@@ -527,15 +531,15 @@ isZero
 	^value = 0! !
 
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'ML 4/11/2019 20:07:53'!
-dividirAEntero: unEntero
+!Entero methodsFor: 'as yet unclassified' stamp: 'ML 4/11/2019 21:09:42'!
+dividirAEntero: aDividend
 	
-	^ Fraccion with: unEntero over: self .! !
+	^ Fraccion with: aDividend over: self .! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'ML 4/11/2019 20:08:55'!
-dividirAFraccion: unaFraccion
+!Entero methodsFor: 'as yet unclassified' stamp: 'ML 4/11/2019 21:09:55'!
+dividirAFraccion: aDividend
 
-	^ unaFraccion class with: unaFraccion numerator over: (unaFraccion denominator * self ).! !
+	^ aDividend class with: aDividend numerator over: (aDividend denominator * self ).! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -563,15 +567,15 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:49:30'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:06:31'!
 * aMultiplier 
 	
-	^ aMultiplier multiplicarFraccion: self.! !
+	^ aMultiplier multiplicarAFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:53:41'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:57:49'!
 + anAdder 
 
-	^ anAdder sumarFraccion: self.! !
+	^ anAdder sumarAFraccion: self.! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:44:16'!
 - aSubtrahend 
@@ -584,49 +588,49 @@ Numero subclass: #Fraccion
 	^ aDivisor dividirAFraccion: self.
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:32:39'!
-dividirAEntero: unEntero
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:16:35'!
+dividirAEntero: aDividend
 
-	^ unEntero * (denominator / numerator).! !
+	^ aDividend * (denominator / numerator).! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 20:36:17'!
-dividirAFraccion: unaFraccion
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:16:44'!
+dividirAFraccion: aDividend
 	
-	^ unaFraccion * (denominator / numerator).! !
+	^ aDividend * (denominator / numerator).! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:28:16'!
-multiplicarEntero: unEntero 
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:14:47'!
+multiplicarAEntero: aMultiplier 
 	
-	^ self class with: numerator * unEntero over: denominator.
-	
-	! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:53:53'!
-multiplicarFraccion: unaFraccion 
-
-	^ numerator * unaFraccion numerator / (denominator * unaFraccion denominator). 
+	^ self class with: numerator * aMultiplier over: denominator.
 	
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:48:41'!
-restarAEntero: unEntero 
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:14:56'!
+multiplicarAFraccion: aMultiplier
+
+	^ numerator * aMultiplier numerator / (denominator * aMultiplier denominator). 
 	
-	^ unEntero value * denominator - numerator / denominator.! !
+	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:54:29'!
-restarAFraccion: unaFraccion
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:00:05'!
+restarAEntero: aMinuend 
 	
-	^denominator * unaFraccion numerator - (numerator * unaFraccion denominator)  / (denominator * unaFraccion denominator).! !
+	^ aMinuend value * denominator - numerator / denominator.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:54:48'!
-sumarEntero: unEntero 
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:00:00'!
+restarAFraccion: aMinuend
+	
+	^denominator * aMinuend numerator - (numerator * aMinuend denominator)  / (denominator * aMinuend denominator).! !
 
-	^unEntero value * denominator + numerator / denominator.! !
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:00:37'!
+sumarAEntero: anAdder 
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 19:54:39'!
-sumarFraccion: unaFraccion 
+	^anAdder value * denominator + numerator / denominator.! !
 
-		^ numerator * unaFraccion denominator + (unaFraccion numerator * denominator) / (denominator * unaFraccion denominator).! !
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'ML 4/11/2019 21:01:28'!
+sumarAFraccion: anAdder 
+
+		^ anAdder numerator * denominator + (numerator * anAdder denominator) / (denominator * anAdder denominator).! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
