@@ -147,45 +147,40 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: #'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'pila estadooooxxxxxxx'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'ML 4/15/2019 21:10:41'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:19:03'!
 isEmpty
 
-	^pila isEmpty .! !
+	self subclassResponsibility.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'ML 4/15/2019 21:55:14'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:13:45'!
 pop
 	
-	[^pila removeFirst]
-	on: Error
-	do: [self error: 'Stack is empty'.].
+	self subclassResponsibility 
 ! !
 
 
-!OOStack methodsFor: 'nil' stamp: 'ML 4/15/2019 21:22:17'!
+!OOStack methodsFor: 'nil' stamp: 'n 4/16/2019 14:08:58'!
 initialize
-	pila := OrderedCollection new.! !
+	^InicioDePila create.! !
 
-!OOStack methodsFor: 'nil' stamp: 'ML 4/15/2019 21:22:26'!
+!OOStack methodsFor: 'nil' stamp: 'n 4/16/2019 12:20:40'!
 push: anElement
-
-	pila addFirst: anElement.
+	
+	self subclassResponsibility.
 	! !
 
-!OOStack methodsFor: 'nil' stamp: 'ML 4/15/2019 21:34:39'!
+!OOStack methodsFor: 'nil' stamp: 'n 4/16/2019 12:24:52'!
 size
-	
-	^pila size.! !
+	self subclassResponsibility.! !
 
-!OOStack methodsFor: 'nil' stamp: 'ML 4/15/2019 21:38:13'!
+!OOStack methodsFor: 'nil' stamp: 'n 4/16/2019 12:26:00'!
 top
-	self isEmpty 
-		ifFalse: [^pila at: 1.] 
-		ifTrue: [self error: 'Stack is empty' ]! !
+	self subclassResponsibility .! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -204,6 +199,105 @@ initialize
 	^self new initialize ! !
 
 
+!classDefinition: #Elemento category: #'Stack-Exercise'!
+OOStack subclass: #Elemento
+	instanceVariableNames: 'prevElem value nextElem'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:35:49'!
+initializeWith: anElement prev: previo
+	prevElem := previo.
+	value := anElement.! !
+
+!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:19:24'!
+isEmpty
+	^ false.! !
+
+!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 14:04:47'!
+pop
+	prevElem removeNext.
+	^value.! !
+
+!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:50:40'!
+push: anElement
+	nextElem := Elemento with: anElement prev: self.! !
+
+!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:18:16'!
+removeNext
+	nextElem := nil! !
+
+!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:25:40'!
+size
+	^ (1+ prevElem size).! !
+
+!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:36:01'!
+top
+	^self value.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Elemento class' category: #'Stack-Exercise'!
+Elemento class
+	instanceVariableNames: ''!
+
+!Elemento class methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:44:12'!
+with: anElement prev: previo
+	^self new initializeWith: anElement prev: previo.! !
+
+
+!classDefinition: #InicioDePila category: #'Stack-Exercise'!
+OOStack subclass: #InicioDePila
+	instanceVariableNames: 'nextElem'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:27:54'!
+initialize
+	nextElem:=nil ! !
+
+!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:19:16'!
+isEmpty
+	^ true.! !
+
+!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:14:19'!
+pop
+	self error: 'Stack is empty'.! !
+
+!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:39:46'!
+push: anElement
+
+	nextElem := Elemento with: anElement prev: self.! !
+
+!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:17:53'!
+removeNext
+	nextElem := nil! !
+
+!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:25:09'!
+size
+	^0.! !
+
+!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:26:42'!
+top
+	self error: 'Stack is empty'! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'InicioDePila class' category: #'Stack-Exercise'!
+InicioDePila class
+	instanceVariableNames: ''!
+
+!InicioDePila class methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:41:24'!
+create
+	^ self new initialize .! !
+
+!InicioDePila class methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:27:37'!
+initialize
+	^ self new initialize .! !
+
+
 !classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: ''
@@ -212,3 +306,4 @@ Object subclass: #SentenceFinderByPrefix
 	category: 'Stack-Exercise'!
 
 OOStack initialize!
+InicioDePila initialize!
