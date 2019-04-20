@@ -144,6 +144,9 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:52:58'!
+test01NotFoundInAnEmptyStack! !
+
 
 !classDefinition: #BaseDeStack category: #'Stack-Exercise'!
 Object subclass: #BaseDeStack
@@ -262,3 +265,22 @@ Object subclass: #SentenceFinderByPrefix
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 20:07:26'!
+find: aPrefix in: aStack
+	|elem matches stackSize coleccionDeElementos|
+	
+	stackSize := aStack size.	
+	coleccionDeElementos := OrderedCollection new.
+	matches := OrderedCollection new.
+	
+	[stackSize] timesRepeat: [
+		elem _ aStack pop.
+		coleccionDeElementos addFirst: elem.
+		[elem beginsWith: aPrefix] ifTrue: [matches add: elem.] ].
+	
+	[stackSize] timesRepeat: [
+		elem _ coleccionDeElementos removeFirst.
+		aStack push: elem.].
+
+	^matches.! !
