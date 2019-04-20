@@ -156,9 +156,9 @@ Object subclass: #BaseDeStack
 isEmpty
 	^true.! !
 
-!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:02:26'!
+!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:22:29'!
 pop
-	self error: 'Stack is empty'.! !
+	^self error: 'Stack is empty'.! !
 
 !BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:53:47'!
 size
@@ -167,6 +167,16 @@ size
 !BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:54:33'!
 top
 	^self error: 'Stack is empty'! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'BaseDeStack class' category: #'Stack-Exercise'!
+BaseDeStack class
+	instanceVariableNames: ''!
+
+!BaseDeStack class methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:21:41'!
+stackEmptyErrorDescription
+	^ 'Stack is empty'! !
 
 
 !classDefinition: #CuerpoDeStack category: #'Stack-Exercise'!
@@ -186,9 +196,9 @@ initializeWith: anElement prev: anterior
 isEmpty
 	^false.! !
 
-!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:06:22'!
+!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:28:49'!
 pop
-	^elem.! !
+	^prev.! !
 
 !CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:54:10'!
 size
@@ -210,11 +220,12 @@ Object subclass: #OOStack
 isEmpty
 	^estado isEmpty ! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:04:23'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:29:52'!
 pop
 	|elementoExtraido|
-	elementoExtraido _ estado pop.
-	estado _ estado prev.! !
+	elementoExtraido _ estado top.
+	estado _ estado pop.
+	^ elementoExtraido ! !
 
 
 !OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:41:33'!
@@ -229,9 +240,9 @@ push: anElement
 size
 	^estado size.! !
 
-!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:47:55'!
+!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 19:10:14'!
 top
-	estado top! !
+	^estado top! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -239,9 +250,8 @@ top
 OOStack class
 	instanceVariableNames: ''!
 
-!OOStack class methodsFor: 'error descriptions' stamp: 'HernanWilkinson 5/7/2012 11:51'!
+!OOStack class methodsFor: 'error descriptions' stamp: 'n 4/20/2019 19:21:31'!
 stackEmptyErrorDescription
-	
 	^ 'Stack is empty'! !
 
 
