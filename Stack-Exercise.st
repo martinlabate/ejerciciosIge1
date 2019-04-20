@@ -145,42 +145,93 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	category: 'Stack-Exercise'!
 
 
-!classDefinition: #OOStack category: #'Stack-Exercise'!
-Object subclass: #OOStack
+!classDefinition: #BaseDeStack category: #'Stack-Exercise'!
+Object subclass: #BaseDeStack
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:19:03'!
+!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:52:55'!
 isEmpty
+	^true.! !
 
-	self subclassResponsibility.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:13:45'!
+!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:02:26'!
 pop
-	
-	self subclassResponsibility 
+	self error: 'Stack is empty'.! !
+
+!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:53:47'!
+size
+	^0.! !
+
+!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:54:33'!
+top
+	^self error: 'Stack is empty'! !
+
+
+!classDefinition: #CuerpoDeStack category: #'Stack-Exercise'!
+Object subclass: #CuerpoDeStack
+	instanceVariableNames: 'prev elem'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:56:27'!
+initializeWith: anElement prev: anterior
+	elem := anElement.
+	prev:=anterior.
 ! !
 
+!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:53:05'!
+isEmpty
+	^false.! !
 
-!OOStack methodsFor: 'nil' stamp: 'n 4/16/2019 14:08:58'!
-initialize
-	^InicioDePila create.! !
+!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:06:22'!
+pop
+	^elem.! !
 
-!OOStack methodsFor: 'nil' stamp: 'n 4/16/2019 12:20:40'!
-push: anElement
-	
-	self subclassResponsibility.
-	! !
-
-!OOStack methodsFor: 'nil' stamp: 'n 4/16/2019 12:24:52'!
+!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:54:10'!
 size
-	self subclassResponsibility.! !
+	^(1+prev size).! !
 
-!OOStack methodsFor: 'nil' stamp: 'n 4/16/2019 12:26:00'!
+!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:58:20'!
 top
-	self subclassResponsibility .! !
+	^elem.! !
+
+
+!classDefinition: #OOStack category: #'Stack-Exercise'!
+Object subclass: #OOStack
+	instanceVariableNames: 'estado'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:55:04'!
+isEmpty
+	^estado isEmpty ! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:04:23'!
+pop
+	|elementoExtraido|
+	elementoExtraido _ estado pop.
+	estado _ estado prev.! !
+
+
+!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:41:33'!
+initialize
+	estado _ BaseDeStack new.! !
+
+!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:58:40'!
+push: anElement
+	estado _ CuerpoDeStack new initializeWith: anElement prev: estado.! !
+
+!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:53:34'!
+size
+	^estado size.! !
+
+!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:47:55'!
+top
+	estado top! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -194,109 +245,6 @@ stackEmptyErrorDescription
 	^ 'Stack is empty'! !
 
 
-!OOStack class methodsFor: 'nil' stamp: 'ML 4/15/2019 21:05:21'!
-initialize
-	^self new initialize ! !
-
-
-!classDefinition: #Elemento category: #'Stack-Exercise'!
-OOStack subclass: #Elemento
-	instanceVariableNames: 'prevElem value nextElem'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:35:49'!
-initializeWith: anElement prev: previo
-	prevElem := previo.
-	value := anElement.! !
-
-!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:19:24'!
-isEmpty
-	^ false.! !
-
-!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 14:04:47'!
-pop
-	prevElem removeNext.
-	^value.! !
-
-!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:50:40'!
-push: anElement
-	nextElem := Elemento with: anElement prev: self.! !
-
-!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:18:16'!
-removeNext
-	nextElem := nil! !
-
-!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:25:40'!
-size
-	^ (1+ prevElem size).! !
-
-!Elemento methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:36:01'!
-top
-	^self value.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'Elemento class' category: #'Stack-Exercise'!
-Elemento class
-	instanceVariableNames: ''!
-
-!Elemento class methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:44:12'!
-with: anElement prev: previo
-	^self new initializeWith: anElement prev: previo.! !
-
-
-!classDefinition: #InicioDePila category: #'Stack-Exercise'!
-OOStack subclass: #InicioDePila
-	instanceVariableNames: 'nextElem'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:27:54'!
-initialize
-	nextElem:=nil ! !
-
-!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:19:16'!
-isEmpty
-	^ true.! !
-
-!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:14:19'!
-pop
-	self error: 'Stack is empty'.! !
-
-!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:39:46'!
-push: anElement
-
-	nextElem := Elemento with: anElement prev: self.! !
-
-!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:17:53'!
-removeNext
-	nextElem := nil! !
-
-!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:25:09'!
-size
-	^0.! !
-
-!InicioDePila methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:26:42'!
-top
-	self error: 'Stack is empty'! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'InicioDePila class' category: #'Stack-Exercise'!
-InicioDePila class
-	instanceVariableNames: ''!
-
-!InicioDePila class methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:41:24'!
-create
-	^ self new initialize .! !
-
-!InicioDePila class methodsFor: 'as yet unclassified' stamp: 'n 4/16/2019 12:27:37'!
-initialize
-	^ self new initialize .! !
-
 
 !classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
@@ -304,6 +252,3 @@ Object subclass: #SentenceFinderByPrefix
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
-
-OOStack initialize!
-InicioDePila initialize!
