@@ -144,8 +144,90 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:52:58'!
-test01NotFoundInAnEmptyStack! !
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:14:18'!
+test01EmptyResultWhenNothingIsFound
+	|unFinder unaPila coleccionVacia|
+	
+	coleccionVacia := OrderedCollection new.
+	unaPila := OOStack new.
+	unaPila push: 'What is a proverb?'.
+	unaPila push: 'What time is it?'.
+	unaPila push: 'A journey of a thousand miles begins with a single step'.
+	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+
+	self assert: ( (unFinder find: 'How') isEqualTo: coleccionVacia ).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:14:28'!
+test02StackDoesNotChangeWhenSearched
+	|unFinder unaPila copiaDeUnFinder matches|
+	
+	unaPila := OOStack new.
+	unaPila push: 'What is a proverb?'.
+	unaPila push: 'What time is it?'.
+	unaPila push: 'A journey of a thousand miles begins with a single step'.
+	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+	copiaDeUnFinder := unFinder.
+	matches := unFinder find: 'What'.	
+
+	self assert: ( unFinder isEqualTo: copiaDeUnFinder).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:14:45'!
+test03FinderReturnsCorrectValuesOnSearch
+	|unFinder unaPila matches expectedMatches|
+	
+	expectedMatches := OrderedCollection new.
+	expectedMatches addFirst: 'What is a proverb?'.
+	expectedMatches addFirst: 'What time is it?'.
+
+	unaPila := OOStack new.
+	unaPila push: 'What is a proverb?'.
+	unaPila push: 'What time is it?'.	
+	unaPila push: 'A journey of a thousand miles begins with a single step'.
+	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+
+	matches := unFinder find: 'What'.	
+
+	self assert: ( matches isEqualTo: expectedMatches ).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:13:39'!
+test04FinderIsCaseSensitive
+
+	|unFinder unaPila matches otherMatches|
+	
+	unaPila := OOStack new.
+	unaPila push: 'What is a proverb?'.
+	unaPila push: 'What time is it?'.	
+	unaPila push: 'A journey of a thousand miles begins with a single step'.
+	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+
+	matches := unFinder find: 'What'.	
+	otherMatches :=  unFinder find: 'what'.
+	self assert: ( matches isNotEqualTo: otherMatches ).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:15:00'!
+test05EmptyResultWhenStackIsEmpty
+	|unFinder unaPila coleccionVacia|
+	
+	coleccionVacia := OrderedCollection new.
+	unaPila := OOStack new.
+	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+
+	self assert: ( (unFinder find: 'How') isEqualTo: coleccionVacia ).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:15:11'!
+test06StackIsNotChangedOnFinderCreation
+	|unFinder unaPila copiaDeUnaPila|
+	
+	unaPila := OOStack new.
+	unaPila push: 'What is a proverb?'.
+	unaPila push: 'What time is it?'.
+	unaPila push: 'A journey of a thousand miles begins with a single step'.
+	
+	copiaDeUnaPila := unaPila.
+	
+	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+
+	self assert: ( unaPila isEqualTo: copiaDeUnaPila ).! !
 
 
 !classDefinition: #BaseDeStack category: #'Stack-Exercise'!
@@ -261,26 +343,30 @@ stackEmptyErrorDescription
 
 !classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
-	instanceVariableNames: ''
+	instanceVariableNames: 'aStack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 20:07:26'!
-find: aPrefix in: aStack
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:06:55'!
+find: aPrefix
 	|elem matches stackSize coleccionDeElementos|
 	
 	stackSize := aStack size.	
 	coleccionDeElementos := OrderedCollection new.
 	matches := OrderedCollection new.
 	
-	[stackSize] timesRepeat: [
+	stackSize timesRepeat: [
 		elem _ aStack pop.
 		coleccionDeElementos addFirst: elem.
-		[elem beginsWith: aPrefix] ifTrue: [matches add: elem.] ].
+		(elem beginsWith: aPrefix) ifTrue: [matches add: elem.] ].
 	
-	[stackSize] timesRepeat: [
+	stackSize timesRepeat: [
 		elem _ coleccionDeElementos removeFirst.
 		aStack push: elem.].
 
 	^matches.! !
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 20:42:31'!
+initializeWith: unaPila
+	aStack _ unaPila.! !
