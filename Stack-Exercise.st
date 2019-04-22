@@ -189,145 +189,178 @@ test03FinderReturnsCorrectValuesOnSearch
 
 	self assert: ( matches isEqualTo: expectedMatches ).! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:13:39'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:31:10'!
 test04FinderIsCaseSensitive
 
-	|unFinder unaPila matches otherMatches|
+	|aFinder aStack matches matchesOtherPrefix|
 	
-	unaPila := OOStack new.
-	unaPila push: 'What is a proverb?'.
-	unaPila push: 'What time is it?'.	
-	unaPila push: 'A journey of a thousand miles begins with a single step'.
-	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+	aStack := OOStack new.
+	aStack push: 'What is a proverb?'.
+	aStack push: 'What time is it?'.	
+	aStack push: 'A journey of a thousand miles begins with a single step'.
+	aFinder := SentenceFinderByPrefix new initializeWith: aStack.
 
-	matches := unFinder find: 'What'.	
-	otherMatches :=  unFinder find: 'what'.
-	self assert: ( matches isNotEqualTo: otherMatches ).! !
+	matches := aFinder find: 'What'.	
+	matchesOtherPrefix :=  aFinder find: 'what'.
+	self assert: ( matches isNotEqualTo: matchesOtherPrefix ).! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:15:00'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:29:33'!
 test05EmptyResultWhenStackIsEmpty
-	|unFinder unaPila coleccionVacia|
+	|aFinder aStack emptyStack|
 	
-	coleccionVacia := OrderedCollection new.
-	unaPila := OOStack new.
-	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+	emptyStack := OrderedCollection new.
+	aStack := OOStack new.
+	aFinder := SentenceFinderByPrefix new initializeWith: aStack.
 
-	self assert: ( (unFinder find: 'How') isEqualTo: coleccionVacia ).! !
+	self assert: ( (aFinder find: 'How') isEqualTo: emptyStack ).! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:15:11'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:29:00'!
 test06StackIsNotChangedOnFinderCreation
-	|unFinder unaPila copiaDeUnaPila|
+	|aFinder aStack stackCopy|
 	
-	unaPila := OOStack new.
-	unaPila push: 'What is a proverb?'.
-	unaPila push: 'What time is it?'.
-	unaPila push: 'A journey of a thousand miles begins with a single step'.
+	aStack := OOStack new.
+	aStack push: 'What is a proverb?'.
+	aStack push: 'What time is it?'.
+	aStack push: 'A journey of a thousand miles begins with a single step'.
 	
-	copiaDeUnaPila := unaPila.
+	stackCopy := aStack.
 	
-	unFinder := SentenceFinderByPrefix new initializeWith: unaPila.
+	aFinder := SentenceFinderByPrefix new initializeWith: aStack.
 
-	self assert: ( unaPila isEqualTo: copiaDeUnaPila ).! !
+	self assert: ( aStack isEqualTo: stackCopy ).! !
 
-
-!classDefinition: #BaseDeStack category: #'Stack-Exercise'!
-Object subclass: #BaseDeStack
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:25:55'!
+test07FinderReturnsTopWhenSerched
+	|aFinder aStack expectedMatches|
+	
+	aStack := OOStack new.
+	aStack push: 'What is a proverb?'.
+	aStack push: 'What time is it?'.
+	aStack push: 'A journey of a thousand miles begins with a single step'.
+		
+	aFinder := SentenceFinderByPrefix new initializeWith: aStack.
+	
+	expectedMatches := OrderedCollection new.
+	expectedMatches add: 'What is a proverb?'.
+	
+	self assert: ( (aFinder find: 'What is a proverb?') isEqualTo: expectedMatches ).! !
 
-!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:52:55'!
-isEmpty
-	^true.! !
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:35:55'!
+test08EmptyResultFindingAnElementWhenWasPoped
+	|aFinder aStack expectedMatches anElement|
+	
+	aStack := OOStack new.
+	aStack push: 'What is a proverb?'.
+	aStack push: 'What time is it?'.
+	aStack push: 'A journey of a thousand miles begins with a single step'.
+		
+	aFinder := SentenceFinderByPrefix new initializeWith: aStack.
+	
+	anElement := aStack pop.
+	
+	expectedMatches := OrderedCollection new.
+	
+	self assert: ( (aFinder find: anElement) isEqualTo: expectedMatches ).! !
 
-!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:22:29'!
-pop
-	^self error: 'Stack is empty'.! !
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:38:09'!
+test09FinderFindsTop
+	|aFinder aStack expectedMatches topElement|
+	
+	aStack := OOStack new.
+	aStack push: 'What is a proverb?'.
+	aStack push: 'What time is it?'.
+	aStack push: 'A journey of a thousand miles begins with a single step'.
+		
+	aFinder := SentenceFinderByPrefix new initializeWith: aStack.	
+	
+	topElement := 'A journey of a thousand miles begins with a single step'.
+	
+	expectedMatches := OrderedCollection new.
+	expectedMatches add: topElement .
+	
+	self assert: ( (aFinder find: topElement) isEqualTo: expectedMatches ).! !
 
-!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:53:47'!
-size
-	^0.! !
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 10:00:13'!
+test10ResultUnchangedWhenPushedAnElementWithoutASearchedPrefix
+	|aFinder anotherFinder aStack anotherStack|
+	
+	aStack := OOStack new.
+	aStack push: 'What is a proverb?'.
+	aStack push: 'What time is it?'.
+	aStack push: 'A journey of a thousand miles begins with a single step'.
+	
+	anotherStack := aStack copy.
+	anotherStack push: 'The sky is Blue'.
 
-!BaseDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:54:33'!
-top
-	^self error: 'Stack is empty'! !
+	aFinder := SentenceFinderByPrefix new initializeWith: aStack.	
+	anotherFinder := SentenceFinderByPrefix new initializeWith: anotherStack.	
+	
+	self assert: ( (aFinder find: 'What') isEqualTo: (anotherFinder find: 'What')).! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 10:00:58'!
+test11ResultChangesWhenPushedAnElementWithTheSearchedPrefix
+	|aFinder anotherFinder aStack anotherStack|
+	
+	aStack := OOStack new.
+	aStack push: 'What is a proverb?'.
+	aStack push: 'What time is it?'.
+	aStack push: 'A journey of a thousand miles begins with a single step'.
+	
+	anotherStack := aStack copy.
+	anotherStack push: 'What is your name?'.
 
-!classDefinition: 'BaseDeStack class' category: #'Stack-Exercise'!
-BaseDeStack class
-	instanceVariableNames: ''!
-
-!BaseDeStack class methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:21:41'!
-stackEmptyErrorDescription
-	^ 'Stack is empty'! !
-
-
-!classDefinition: #CuerpoDeStack category: #'Stack-Exercise'!
-Object subclass: #CuerpoDeStack
-	instanceVariableNames: 'prev elem'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:56:27'!
-initializeWith: anElement prev: anterior
-	elem := anElement.
-	prev:=anterior.
-! !
-
-!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:53:05'!
-isEmpty
-	^false.! !
-
-!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:28:49'!
-pop
-	^prev.! !
-
-!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:54:10'!
-size
-	^(1+prev size).! !
-
-!CuerpoDeStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:58:20'!
-top
-	^elem.! !
+	aFinder := SentenceFinderByPrefix new initializeWith: aStack.	
+	anotherFinder := SentenceFinderByPrefix new initializeWith: anotherStack.	
+	
+	self assert: ( (aFinder find: 'What') isNotEqualTo: (anotherFinder find: 'What')).
+	! !
 
 
 !classDefinition: #OOStack category: #'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'estado'
+	instanceVariableNames: 'internalStackStructure'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:55:04'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:01:29'!
 isEmpty
-	^estado isEmpty ! !
+	"Se analiza si la pila está vacia."
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:29:52'!
+	^internalStackStructure isEmpty ! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 08:59:21'!
 pop
-	|elementoExtraido|
-	elementoExtraido _ estado top.
-	estado _ estado pop.
-	^ elementoExtraido ! !
+	"Se extrae un elemento de la pila y se devuelve como respuesta al mensaje pop, si fuera posible."
+
+	|anExtractedElementValue|
+	anExtractedElementValue _ internalStackStructure top.
+	internalStackStructure _ internalStackStructure pop.
+	^ anExtractedElementValue ! !
 
 
-!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:41:33'!
+!OOStack methodsFor: 'nil' stamp: 'n 4/22/2019 09:01:46'!
 initialize
-	estado _ BaseDeStack new.! !
+	"Se crea una nueva pila."
 
-!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:58:40'!
-push: anElement
-	estado _ CuerpoDeStack new initializeWith: anElement prev: estado.! !
+	internalStackStructure _ StackBase new.! !
 
-!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 18:53:34'!
+!OOStack methodsFor: 'nil' stamp: 'n 4/22/2019 09:00:53'!
+push: anElementValue
+	"Se agrega un nuevo elemento a la pila como tope."
+
+	internalStackStructure _ StackBody new initializeWith: anElementValue tail: internalStackStructure.! !
+
+!OOStack methodsFor: 'nil' stamp: 'n 4/22/2019 08:54:14'!
 size
-	^estado size.! !
+	"se analiza la cantidad de elementos que tiene la pila."
+	^internalStackStructure size.! !
 
-!OOStack methodsFor: 'nil' stamp: 'n 4/20/2019 19:10:14'!
+!OOStack methodsFor: 'nil' stamp: 'n 4/22/2019 09:00:10'!
 top
-	^estado top! !
+	"se devuelve el valor del elemento que se encuentra en el tope de la pila, si fuera posible"
+	
+	^internalStackStructure top! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -348,25 +381,92 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 21:06:55'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:10:50'!
 find: aPrefix
-	|elem matches stackSize coleccionDeElementos|
+	"Devuelve los elementos de la pila que tienen un prefijo común dado."
+	|anElem matchingElems stackSize collectionElemsTemp|
 	
 	stackSize := aStack size.	
-	coleccionDeElementos := OrderedCollection new.
-	matches := OrderedCollection new.
+	collectionElemsTemp := OrderedCollection new.
+	matchingElems := OrderedCollection new.
 	
 	stackSize timesRepeat: [
-		elem _ aStack pop.
-		coleccionDeElementos addFirst: elem.
-		(elem beginsWith: aPrefix) ifTrue: [matches add: elem.] ].
+		anElem _ aStack pop.
+		collectionElemsTemp addFirst: anElem.
+		(anElem beginsWith: aPrefix) ifTrue: [matchingElems add: anElem.] ].
 	
 	stackSize timesRepeat: [
-		elem _ coleccionDeElementos removeFirst.
-		aStack push: elem.].
+		anElem _ collectionElemsTemp removeFirst.
+		aStack push: anElem.].
 
-	^matches.! !
+	^matchingElems.! !
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 20:42:31'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 09:11:13'!
 initializeWith: unaPila
+	"Crea un nuevo finder."
+	
 	aStack _ unaPila.! !
+
+
+!classDefinition: #StackBase category: #'Stack-Exercise'!
+Object subclass: #StackBase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!StackBase methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:52:55'!
+isEmpty
+	^true.! !
+
+!StackBase methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:22:29'!
+pop
+	^self error: 'Stack is empty'.! !
+
+!StackBase methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:53:47'!
+size
+	^0.! !
+
+!StackBase methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:54:33'!
+top
+	^self error: 'Stack is empty'! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'StackBase class' category: #'Stack-Exercise'!
+StackBase class
+	instanceVariableNames: ''!
+
+!StackBase class methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 19:21:41'!
+stackEmptyErrorDescription
+	^ 'Stack is empty'! !
+
+
+!classDefinition: #StackBody category: #'Stack-Exercise'!
+Object subclass: #StackBody
+	instanceVariableNames: 'tail topValue'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!StackBody methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 08:36:51'!
+initializeWith: anElementValue tail: aTail
+	topValue := anElementValue.
+	tail:=aTail.
+! !
+
+!StackBody methodsFor: 'as yet unclassified' stamp: 'n 4/20/2019 18:53:05'!
+isEmpty
+	^false.! !
+
+!StackBody methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 08:35:50'!
+pop
+	^tail.! !
+
+!StackBody methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 08:35:57'!
+size
+	^(1+tail size).! !
+
+!StackBody methodsFor: 'as yet unclassified' stamp: 'n 4/22/2019 08:36:29'!
+top
+	^topValue.! !
