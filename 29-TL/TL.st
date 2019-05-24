@@ -26,13 +26,13 @@ testNoXChipsOnNewGame
 	juego empezar.
 	self assert: [juego fichasX isEmpty.].! !
 
-!TestTerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/20/2019 21:00:18'!
+!TestTerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/24/2019 19:57:51'!
 testNoYChipsBeforPlaying
 	|juego|
 	juego _ TerniCapilli new.
 	juego empezar.
 	juego jugar: 0@0.
-	self assert: [juego fichasY isEmpty.].! !
+	self assert: [juego fichasO isEmpty.].! !
 
 !TestTerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/20/2019 20:43:14'!
 testXStartTheGame
@@ -80,7 +80,7 @@ testCantPlacedMoreThan3Chips
 
 	! !
 
-!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 20:43:39'!
+!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 19:57:51'!
 testOneXChipAndOneOChipWhenEachPlayedOnce
 	|juego|
 	juego _ TerniCapilli new.
@@ -88,16 +88,16 @@ testOneXChipAndOneOChipWhenEachPlayedOnce
 	juego jugar: 0@0.
 	juego jugar: 0@1.
 	self assert: [(juego fichasX size) = 1.].
-	self assert: [(juego fichasY size) = 1.].! !
+	self assert: [(juego fichasO size) = 1.].! !
 
-!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 20:43:31'!
+!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 19:57:51'!
 testOneXChipWhenXPlayedOnce
 	|juego|
 	juego _ TerniCapilli new.
 	juego empezar.
 	juego jugar: 0@0.
 	self assert: [juego fichasX size = 1.].
-	self assert: [juego fichasY isEmpty].! !
+	self assert: [juego fichasO isEmpty].! !
 
 
 !TestTerniCapilli methodsFor: 'CheckPosition' stamp: 'ML 5/20/2019 20:43:51'!
@@ -120,7 +120,7 @@ testCantPlacedAChipOnAnOcupiedPosition
 		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Ocupada']	! !
 
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/20/2019 20:57:45'!
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/24/2019 19:50:30'!
 testAfterOMovesComesX
 	|juego|
 	juego _ TerniCapilli new.
@@ -132,9 +132,9 @@ testAfterOMovesComesX
 	juego jugar: 1@2.
 	juego jugar: 1@0.
 	juego move: 1@1 to: 2@1.
-	self assert: (juego turno = #O).
+	self assert: (juego turno isKindOf: OPlayer).
 	juego move: 1@0 to: 2@0.
-	self assert: (juego turno = #X).
+	self assert: (juego turno isKindOf: XPlayer).
 ! !
 
 !TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/20/2019 20:57:11'!
@@ -318,28 +318,30 @@ Object subclass: #TerniCapilli
 	poolDictionaries: ''
 	category: 'TL'!
 
-!TerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/20/2019 18:35:24'!
+!TerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/24/2019 19:51:09'!
 empezar
 	fichasX _ OrderedCollection new.
 	fichasY _ OrderedCollection new.
-	turno _ #X! !
+	turno _ XPlayer new.! !
 
 
-!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 20:34:16'!
+!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 20:01:38'!
+changePlayer: unPlayer
+	turno _ unPlayer .! !
+
+!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 20:01:11'!
 jugar: unPunto
 	(self isOcupied: unPunto) ifTrue: [self error: 'Posición Ocupada'].
 	(self isValid: unPunto) ifFalse: [self error: 'Posición Inválida'].
 	(self finished) ifTrue: [self error: 'Juego terminado'].
 
-	turno = #X 
-	ifTrue: [
-		self jugarX: unPunto. 
-		turno _ #O.
-		] 
-	ifFalse: [
-		self jugarY: unPunto. 
-		turno _ #X.
-		]. ! !
+	turno play: unPunto in: self.! !
+
+!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 19:58:06'!
+jugarO: unPunto
+	fichasY size = 3 ifTrue: [self error: 'No hay más fichas']
+	ifFalse:[fichasY add: unPunto.]
+	! !
 
 !TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 18:37:22'!
 jugarX: unPunto
@@ -347,14 +349,8 @@ jugarX: unPunto
 	ifFalse:[fichasX add: unPunto.]
 	! !
 
-!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 18:37:33'!
-jugarY: unPunto
-	fichasY size = 3 ifTrue: [self error: 'No hay más fichas']
-	ifFalse:[fichasY add: unPunto.]
-	! !
 
-
-!TerniCapilli methodsFor: 'Sliding' stamp: 'ML 5/20/2019 19:58:19'!
+!TerniCapilli methodsFor: 'Sliding' stamp: 'ML 5/24/2019 19:58:06'!
 move: unPunto to: otroPunto
 	(self canMakeMovement) ifFalse: [self error: 'Todavía no se puede efectuar este mvimiento'].
 	(self isOcupied: unPunto ) ifFalse: [self error: 'Posición inicial incorrecta'].
@@ -371,7 +367,7 @@ move: unPunto to: otroPunto
 		] 
 	ifFalse: [
 		(fichasY includes: unPunto) ifTrue: [fichasY remove: unPunto.
-			self jugarY: otroPunto. 
+			self jugarO: otroPunto. 
 			turno _ #X.] 
 		ifFalse: [self error: 'Esta ficha es X, no la podes mover'].
 		]. ! !
@@ -388,13 +384,13 @@ isValid: unPunto
 ! !
 
 
+!TerniCapilli methodsFor: 'Observadores' stamp: 'ML 5/24/2019 19:57:51'!
+fichasO
+	^ fichasY.! !
+
 !TerniCapilli methodsFor: 'Observadores' stamp: 'ML 5/20/2019 17:57:00'!
 fichasX
 	^ fichasX.! !
-
-!TerniCapilli methodsFor: 'Observadores' stamp: 'ML 5/20/2019 17:57:12'!
-fichasY
-	^ fichasY.! !
 
 !TerniCapilli methodsFor: 'Observadores' stamp: 'ML 5/20/2019 20:27:09'!
 turno
@@ -405,9 +401,9 @@ turno
 canMakeMovement
 	^ (fichasX size = 3) and: (fichasY size = 3)! !
 
-!TerniCapilli methodsFor: 'CheckMovements' stamp: 'ML 5/20/2019 21:19:00'!
+!TerniCapilli methodsFor: 'CheckMovements' stamp: 'ML 5/24/2019 19:46:06'!
 isValidMovementFrom: unPunto to: otroPunto
-	"self isValid: unPunto."
+	
 	^ (unPunto dist: otroPunto) = 1.! !
 
 
@@ -415,9 +411,9 @@ isValidMovementFrom: unPunto to: otroPunto
 finished
 	^ (self won: fichasX )or: (self won: fichasY).! !
 
-!TerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 20:30:22'!
+!TerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/24/2019 19:57:51'!
 tableroVacio
-	^ (self fichasX size =0) and: (self fichasY size =0).! !
+	^ (self fichasX size =0) and: (self fichasO size =0).! !
 
 !TerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 21:14:07'!
 won: unaListaDeFichas
@@ -434,3 +430,46 @@ won: unaListaDeFichas
 	(((ficha1 x isNotEqualTo: ficha2 x) and: (ficha1 x isNotEqualTo: ficha3 x) and: (ficha3 x isNotEqualTo: ficha2 x)) and:
 		(ficha1 y isNotEqualTo: ficha2 y) and: (ficha1 y isNotEqualTo: ficha3 y) and: (ficha3 y isNotEqualTo: ficha2 y) and:(ficha1 dist: ficha2) = (ficha2 dist: ficha3)) .
 ! !
+
+
+!classDefinition: #TerniCapilliPlayer category: #TL!
+Object subclass: #TerniCapilliPlayer
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TL'!
+
+!TerniCapilliPlayer methodsFor: 'as yet unclassified' stamp: 'ML 5/24/2019 19:55:03'!
+play: unPunto
+	! !
+
+!TerniCapilliPlayer methodsFor: 'as yet unclassified' stamp: 'ML 5/24/2019 19:56:30'!
+play: unPunto in: aTerniCapilliGame
+	^self subclassResponsibility.
+	! !
+
+
+!classDefinition: #OPlayer category: #TL!
+TerniCapilliPlayer subclass: #OPlayer
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TL'!
+
+!OPlayer methodsFor: 'as yet unclassified' stamp: 'ML 5/24/2019 20:02:12'!
+play: unPunto in: aTerniCapilliGame
+	aTerniCapilliGame jugarO: unPunto.
+	aTerniCapilliGame changePlayer: XPlayer new.! !
+
+
+!classDefinition: #XPlayer category: #TL!
+TerniCapilliPlayer subclass: #XPlayer
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TL'!
+
+!XPlayer methodsFor: 'as yet unclassified' stamp: 'ML 5/24/2019 20:02:25'!
+play: unPunto in: aTerniCapilliGame
+	aTerniCapilliGame jugarX: unPunto.
+	aTerniCapilliGame changePlayer: OPlayer new.! !
