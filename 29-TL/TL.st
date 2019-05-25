@@ -5,431 +5,472 @@ TestCase subclass: #TestTerniCapilli
 	poolDictionaries: ''
 	category: 'TL'!
 
-!TestTerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/20/2019 20:42:59'!
+!TestTerniCapilli methodsFor: 'Initialize' stamp: 'n 5/25/2019 16:40:33'!
 testEmptyBoardWhenNoneChipHasBeenPlaced
-	|juego|
-	juego _ TerniCapilli new.
-	juego empezar.
-	self assert: [juego tableroVacio.].! !
 
-!TestTerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/20/2019 20:43:03'!
-testGameIsNotOverWhenGameHasJustStarted
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
+	juego initGame.
+	self assert: [juego boardIsEmpty.].! !
+
+!TestTerniCapilli methodsFor: 'Initialize' stamp: 'n 5/25/2019 16:40:41'!
+testGameIsNotOverWhenGameHasJustStarted
+
+	|juego|
+	juego _ TerniCapilli new.
+	juego initGame.
 	self deny: juego finished.! !
 
-!TestTerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/20/2019 20:43:07'!
+!TestTerniCapilli methodsFor: 'Initialize' stamp: 'n 5/25/2019 16:40:47'!
 testNoXChipsOnNewGame
+
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	self assert: [juego fichasX isEmpty.].! !
+	juego initGame.
+	self assert: [juego xChips isEmpty.].! !
 
-!TestTerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/24/2019 19:57:51'!
+!TestTerniCapilli methodsFor: 'Initialize' stamp: 'n 5/25/2019 16:40:55'!
 testNoYChipsBeforPlaying
+
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	self assert: [juego fichasO isEmpty.].! !
+	juego initGame.
+	juego playIn: 0@0.
+	self assert: [juego oChips isEmpty.].! !
 
-!TestTerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/20/2019 20:43:14'!
+!TestTerniCapilli methodsFor: 'Initialize' stamp: 'n 5/25/2019 16:41:03'!
 testXStartTheGame
+
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	self assert: [juego turno = #X].! !
+	juego initGame.
+	self assert: [juego nextPlayer isKindOf: XPlayer].! !
 
 
-
-!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 20:47:56'!
+!TestTerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:41:16'!
 testAfterOPlaysX
+
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	self assert: [juego turno = #O].
-	juego jugar: 0@1.
-	self assert: [juego turno = #X].
-! !
+	juego initGame.
+	juego playIn: 0@0.
+	self assert: [juego nextPlayer isKindOf: OPlayer].
+	juego playIn: 0@1.
+	self assert: [juego nextPlayer isKindOf: XPlayer].! !
 
-!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 20:47:22'!
+!TestTerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:41:28'!
 testAfterXPlaysO
+
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	self assert: [juego turno = #X].
-	juego jugar: 0@0.
-	self assert: [juego turno = #O].! !
+	juego initGame.
+	self assert: [juego nextPlayer isKindOf: XPlayer].
+	juego playIn: 0@0.
+	self assert: [juego nextPlayer isKindOf: OPlayer].! !
 
-!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 20:49:05'!
+!TestTerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:36:57'!
 testCantPlacedMoreThan3Chips
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@0.
-	juego jugar: 0@1.
-	juego jugar: 1@1.	
-	juego jugar: 2@2.
-	juego jugar: 2@1.
-	self should: [ juego jugar: 2@0.]
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.	
+	juego playIn: 2@2.
+	juego playIn: 2@1.
+	self should: [ juego playIn: 2@0.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'No hay más fichas']
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'No hay mÃ¡s fichas']! !
 
-	! !
-
-!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 19:57:51'!
+!TestTerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:36:58'!
 testOneXChipAndOneOChipWhenEachPlayedOnce
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 0@1.
-	self assert: [(juego fichasX size) = 1.].
-	self assert: [(juego fichasO size) = 1.].! !
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 0@1.
+	self assert: [(juego xChips size) = 1.].
+	self assert: [(juego oChips size) = 1.].! !
 
-!TestTerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 19:57:51'!
+!TestTerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:41:39'!
 testOneXChipWhenXPlayedOnce
+
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	self assert: [juego fichasX size = 1.].
-	self assert: [juego fichasO isEmpty].! !
+	juego initGame.
+	juego playIn: 0@0.
+	self assert: [juego xChips size = 1.].
+	self assert: [juego oChips isEmpty].! !
 
 
-!TestTerniCapilli methodsFor: 'CheckPosition' stamp: 'ML 5/20/2019 20:43:51'!
+!TestTerniCapilli methodsFor: 'CheckPosition' stamp: 'n 5/25/2019 16:41:49'!
 testCantPlacedAChipInAInvalidPosition
+
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	self should: [ juego jugar: 0@-1. ]
+	juego initGame.
+	self should: [ juego playIn: 0@-1. ]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Inválida']	! !
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'PosiciÃ³n InvÃ¡Â¡lida']	! !
 
-!TestTerniCapilli methodsFor: 'CheckPosition' stamp: 'ML 5/20/2019 20:43:46'!
+!TestTerniCapilli methodsFor: 'CheckPosition' stamp: 'n 5/25/2019 16:41:57'!
 testCantPlacedAChipOnAnOcupiedPosition
+
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	self should: [ juego jugar: 0@0. ]
+	juego initGame.
+	juego playIn: 0@0.
+	self should: [ juego playIn: 0@0. ]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Ocupada']	! !
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'PosiciÃ³n Ocupada']	! !
 
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/24/2019 19:50:30'!
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:58'!
 testAfterOMovesComesX
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 0@1.	
-	juego jugar: 1@1.
-	juego jugar: 0@2.
-	juego jugar: 1@2.
-	juego jugar: 1@0.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 0@1.	
+	juego playIn: 1@1.
+	juego playIn: 0@2.
+	juego playIn: 1@2.
+	juego playIn: 1@0.
 	juego move: 1@1 to: 2@1.
-	self assert: (juego turno isKindOf: OPlayer).
+	self assert: (juego nextPlayer isKindOf: OPlayer).
 	juego move: 1@0 to: 2@0.
-	self assert: (juego turno isKindOf: XPlayer).
-! !
+	self assert: (juego nextPlayer isKindOf: XPlayer).! !
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/20/2019 20:57:11'!
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:57'!
 testAfterXMovesComesO
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 0@1.	
-	juego jugar: 1@1.
-	juego jugar: 0@2.
-	juego jugar: 1@2.
-	juego jugar: 1@0.
-	self assert: (juego turno = #X).
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 0@1.	
+	juego playIn: 1@1.
+	juego playIn: 0@2.
+	juego playIn: 1@2.
+	juego playIn: 1@0.
+	self assert: (juego nextPlayer isKindOf: XPlayer).
 	juego move: 1@1 to: 2@1.
-	self assert: (juego turno = #O).! !
+	self assert: (juego nextPlayer isKindOf: OPlayer).! !
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/20/2019 20:44:41'!
-testCantMakeAMovementBeforeXhipsArePlaced
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:57'!
+testCantMakeAMovementBeforeChipsArePlaced
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 0@1.
-	juego jugar: 1@1.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.
 
 	self should: [juego move: 1@1 to: 1@2.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'Todavía no se puede efectuar este mvimiento']
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'TodavÃ­a no se puede efectuar este mvimiento']
 ! !
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/20/2019 20:44:34'!
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:58'!
 testCantMakeAnInvalidMovement
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@0.
-	juego jugar: 0@1.
-	juego jugar: 1@1.	
-	juego jugar: 2@0.
-	juego jugar: 2@1.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.	
+	juego playIn: 2@0.
+	juego playIn: 2@1.
 	self should: [ juego move: 0@0 to: 2@2.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'Movimiento Inválido']
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'Movimiento InvÃ¡Â¡lido']
 	! !
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/20/2019 20:44:29'!
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:58'!
+testCantMoveOtherPlayersChip
+	|juego|
+	juego _ TerniCapilli new.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.
+	juego playIn: 0@2.
+	juego playIn: 1@2.
+	juego playIn: 1@0.
+
+	self should: [juego move: 1@0 to: 2@0.] raise: Error withExceptionDo: [:anError | self assert: anError messageText = 'Esta ficha no la podes mover']. ! !
+
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:57'!
 testCantMoveToAnOcupiedPosition
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@0.
-	juego jugar: 0@1.
-	juego jugar: 1@1.	
-	juego jugar: 2@2.
-	juego jugar: 2@1.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.	
+	juego playIn: 2@2.
+	juego playIn: 2@1.
 	self should: [ juego move: 0@0 to: 1@0.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Ocupada']
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'PosiciÃ³n Ocupada']
 	! !
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/20/2019 20:44:23'!
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:58'!
 testCantMoveToInvalidPosition
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 0@1.
-	juego jugar: 0@2.
-	juego jugar: 2@0.
-	juego jugar: 2@1.
-	juego jugar: 2@2.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 0@1.
+	juego playIn: 0@2.
+	juego playIn: 2@0.
+	juego playIn: 2@1.
+	juego playIn: 2@2.
 		
 	self should: [ juego move: 0@0 to: 0@-1.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Inválida']
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'PosiciÃ³n InvÃ¡Â¡lida']
 	! !
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'ML 5/20/2019 20:44:37'!
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:57'!
 testValidMoveChangesChipsPositions
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@0.
-	juego jugar: 0@1.
-	juego jugar: 1@1.	
-	juego jugar: 2@2.
-	juego jugar: 2@1.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.	
+	juego playIn: 2@2.
+	juego playIn: 2@1.
 	juego move:0@1  to: 0@2.
-	self assert: [(juego fichasX) includes: 0@2].
-	self deny: (juego fichasX includes: 0@1).! !
+	self assert: [(juego xChips) includes: 0@2].
+	self deny: (juego xChips includes: 0@1).! !
 
 
-!TestTerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 20:43:57'!
+!TestTerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:36:58'!
 testCantPlayIfGameOver
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@0.
-	juego jugar: 0@1.
-	juego jugar: 1@1.	
-	juego jugar: 0@2.
-	self should: [juego jugar: 2@2.]
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.	
+	juego playIn: 0@2.
+	self should: [juego playIn: 2@2.]
 		 raise: Error
 		 withExceptionDo: [ :anError | self assert: anError messageText = 'Juego terminado']	! !
 
-!TestTerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 20:44:03'!
+!TestTerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:36:58'!
 testDiagonalPlacedChipsCanWinAGame
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@0.
-	juego jugar: 1@1.
-	juego jugar: 2@1.	
-	juego jugar: 2@2.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 1@1.
+	juego playIn: 2@1.	
+	juego playIn: 2@2.
 	self assert: [juego finished].
 	! !
 
-!TestTerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 20:44:08'!
+!TestTerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:36:58'!
 testHorizontalPlacedChipsCanWinAGame
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@0.
-	juego jugar: 0@1.
-	juego jugar: 1@1.	
-	juego jugar: 0@2.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.	
+	juego playIn: 0@2.
 	self assert: [juego finished].
 	! !
 
-!TestTerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 20:44:16'!
+!TestTerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:36:57'!
 testMovingAChipCanWinAGame
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 0@1.
-	juego jugar: 1@1.
-	juego jugar: 0@2.
-	juego jugar: 1@2.
-	juego jugar: 2@0.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.
+	juego playIn: 0@2.
+	juego playIn: 1@2.
+	juego playIn: 2@0.
 	juego move: 1@2 to: 2@2.
 	self assert: (juego finished).! !
 
-!TestTerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 21:15:41'!
+!TestTerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:36:58'!
 testNonWinningSetupDoesNotEndGame
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@0.
-	juego jugar: 1@2.
-	juego jugar: 1@1.	
-	juego jugar: 2@1.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 1@2.
+	juego playIn: 1@1.	
+	juego playIn: 2@1.
 	self deny: (juego finished).! !
 
-!TestTerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 20:44:12'!
+!TestTerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:36:58'!
 testVerticalPlacedChipsCanWinAGame
 	|juego|
 	juego _ TerniCapilli new.
-	juego empezar.
-	juego jugar: 0@0.
-	juego jugar: 1@2.
-	juego jugar: 1@0.
-	juego jugar: 1@1.	
-	juego jugar: 2@0.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@2.
+	juego playIn: 1@0.
+	juego playIn: 1@1.	
+	juego playIn: 2@0.
 	self assert: [juego finished].
 	! !
 
 
 !classDefinition: #TerniCapilli category: #TL!
 Object subclass: #TerniCapilli
-	instanceVariableNames: 'fichasX fichasY turno'
+	instanceVariableNames: 'xChips oChips nextPlayer'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TL'!
 
-!TerniCapilli methodsFor: 'Initialize' stamp: 'ML 5/24/2019 19:51:09'!
-empezar
-	fichasX _ OrderedCollection new.
-	fichasY _ OrderedCollection new.
-	turno _ XPlayer new.! !
+!TerniCapilli methodsFor: 'Initialize' stamp: 'n 5/25/2019 15:51:04'!
+initGame
+	xChips _ OrderedCollection new.
+	oChips _ OrderedCollection new.
+	nextPlayer _ XPlayer new.! !
 
 
-!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 20:01:38'!
-changePlayer: unPlayer
-	turno _ unPlayer .! !
+!TerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:35:09'!
+changePlayer: aPlayer
+	nextPlayer _ aPlayer .! !
 
-!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 20:01:11'!
-jugar: unPunto
-	(self isOcupied: unPunto) ifTrue: [self error: 'Posición Ocupada'].
-	(self isValid: unPunto) ifFalse: [self error: 'Posición Inválida'].
-	(self finished) ifTrue: [self error: 'Juego terminado'].
+!TerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:37:17'!
+oPlaysIn: aChipPosition
+	self playingIn: aChipPosition withChips: oChips.! !
 
-	turno play: unPunto in: self.! !
+!TerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:36:57'!
+playIn: aChipPosition
+	self isNotOcupied: aChipPosition.
+	self isValid: aChipPosition.
+	self isNotFinished.
+	nextPlayer play: aChipPosition in: self.! !
 
-!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/24/2019 19:58:06'!
-jugarO: unPunto
-	fichasY size = 3 ifTrue: [self error: 'No hay más fichas']
-	ifFalse:[fichasY add: unPunto.]
-	! !
+!TerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:37:17'!
+playingIn: aChipPosition withChips: aChipsCollection
 
-!TerniCapilli methodsFor: 'Playing' stamp: 'ML 5/20/2019 18:37:22'!
-jugarX: unPunto
-	fichasX size = 3 ifTrue: [self error: 'No hay más fichas']
-	ifFalse:[fichasX add: unPunto.]
-	! !
+	aChipsCollection size = 3 ifTrue: [self error: 'No hay mÃ¡s fichas']
+	ifFalse:[aChipsCollection add: aChipPosition.]	! !
 
+!TerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:37:26'!
+xPlaysIn: aChipPosition
 
-!TerniCapilli methodsFor: 'Sliding' stamp: 'ML 5/24/2019 19:58:06'!
-move: unPunto to: otroPunto
-	(self canMakeMovement) ifFalse: [self error: 'Todavía no se puede efectuar este mvimiento'].
-	(self isOcupied: unPunto ) ifFalse: [self error: 'Posición inicial incorrecta'].
-	(self isOcupied: otroPunto) ifTrue: [self error: 'Posición Ocupada'].
-	(self isValid: otroPunto) ifFalse: [self error: 'Posición Inválida'].
-	(self isValidMovementFrom: unPunto to: otroPunto) ifFalse: [self error: 'Movimiento Inválido'].
-	
-	turno = #X 
-	ifTrue: [
-		(fichasX includes: unPunto) ifTrue: [fichasX remove: unPunto.
-			self jugarX: otroPunto. 
-			turno _ #O.] 
-		ifFalse: [self error: 'Esta ficha es O, no la podes mover'].
-		] 
-	ifFalse: [
-		(fichasY includes: unPunto) ifTrue: [fichasY remove: unPunto.
-			self jugarO: otroPunto. 
-			turno _ #X.] 
-		ifFalse: [self error: 'Esta ficha es X, no la podes mover'].
-		]. ! !
+	self playingIn: aChipPosition withChips: xChips	! !
 
 
-!TerniCapilli methodsFor: 'CheckPosotion' stamp: 'ML 5/20/2019 18:22:46'!
-isOcupied: unPunto
+!TerniCapilli methodsFor: 'Sliding' stamp: 'n 5/25/2019 16:34:56'!
+move: aChipPosition to: otherChipPosition
+	self canMakeMovement.
+	self isOcupied: aChipPosition.
+	self isNotOcupied: otherChipPosition.
+	self isValid: otherChipPosition.
+	self isValidMovementFrom: aChipPosition to: otherChipPosition.
+	nextPlayer move: aChipPosition to: otherChipPosition in: self! !
 
-	^ (fichasX includes: unPunto) or: (fichasY includes: unPunto).! !
+!TerniCapilli methodsFor: 'Sliding' stamp: 'n 5/25/2019 16:34:41'!
+moveO: aChipPosition to: otherChipPosition
 
-!TerniCapilli methodsFor: 'CheckPosotion' stamp: 'ML 5/20/2019 18:29:15'!
-isValid: unPunto
-	^ unPunto between: 0@0 and: 2@2
+	self moving: aChipPosition to: otherChipPosition chips: oChips  nextPlayer: XPlayer new.! !
+
+!TerniCapilli methodsFor: 'Sliding' stamp: 'n 5/25/2019 16:34:23'!
+moveX: aChipPosition to: otherChipPosition
+	self moving: aChipPosition to: otherChipPosition chips: xChips  nextPlayer: OPlayer new.! !
+
+!TerniCapilli methodsFor: 'Sliding' stamp: 'n 5/25/2019 16:36:57'!
+moving: aChipPosition to: otherChipPosition chips: aChipsCollection nextPlayer: aPlayer
+
+	(aChipsCollection includes: aChipPosition) ifTrue: [aChipsCollection remove: aChipPosition.
+	self playIn: otherChipPosition.
+	self changePlayer: aPlayer.]
+	ifFalse: [self error: 'Esta ficha no la podes mover'].! !
+
+
+!TerniCapilli methodsFor: 'CheckPosotion' stamp: 'n 5/25/2019 16:37:52'!
+isNotOcupied: aChipPosition
+
+	^ ((xChips includes: aChipPosition) or: (oChips includes: aChipPosition)) ifTrue: [self error: 'PosiciÃ³n Ocupada'].! !
+
+!TerniCapilli methodsFor: 'CheckPosotion' stamp: 'n 5/25/2019 16:38:05'!
+isOcupied: aChipPosition
+
+	^ ((xChips includes: aChipPosition) or: (oChips includes: aChipPosition)) ifFalse: [self error: 'PosiciÃ³n Desocupada'].! !
+
+!TerniCapilli methodsFor: 'CheckPosotion' stamp: 'n 5/25/2019 16:38:14'!
+isValid: aChipPosition
+
+	^ (aChipPosition between: 0@0 and: 2@2) ifFalse: [self error: 'PosiciÃ³n InvÃ¡Â¡lida'].
 ! !
 
 
-!TerniCapilli methodsFor: 'Observadores' stamp: 'ML 5/24/2019 19:57:51'!
-fichasO
-	^ fichasY.! !
+!TerniCapilli methodsFor: 'Observadores' stamp: 'n 5/25/2019 16:13:50'!
+nextPlayer
 
-!TerniCapilli methodsFor: 'Observadores' stamp: 'ML 5/20/2019 17:57:00'!
-fichasX
-	^ fichasX.! !
+	^nextPlayer ! !
 
-!TerniCapilli methodsFor: 'Observadores' stamp: 'ML 5/20/2019 20:27:09'!
-turno
-	^turno ! !
+!TerniCapilli methodsFor: 'Observadores' stamp: 'n 5/25/2019 16:13:55'!
+oChips
+	^ oChips.! !
+
+!TerniCapilli methodsFor: 'Observadores' stamp: 'n 5/25/2019 16:14:02'!
+xChips
+
+	^ xChips.! !
 
 
-!TerniCapilli methodsFor: 'CheckMovements' stamp: 'ML 5/20/2019 19:58:55'!
+!TerniCapilli methodsFor: 'CheckMovements' stamp: 'n 5/25/2019 16:13:44'!
 canMakeMovement
-	^ (fichasX size = 3) and: (fichasY size = 3)! !
 
-!TerniCapilli methodsFor: 'CheckMovements' stamp: 'ML 5/24/2019 19:46:06'!
-isValidMovementFrom: unPunto to: otroPunto
-	
-	^ (unPunto dist: otroPunto) = 1.! !
+	^ ((xChips size = 3) and: (oChips size = 3)) ifFalse: [self error: 'TodavÃ­a no se puede efectuar este mvimiento']! !
+
+!TerniCapilli methodsFor: 'CheckMovements' stamp: 'n 5/25/2019 16:38:49'!
+isValidMovementFrom: aChipPosition to: otherChipPosition
+
+	^ ((aChipPosition dist: otherChipPosition) = 1) ifFalse: [self error: 'Movimiento InvÃ¡Â¡lido'].! !
 
 
-!TerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 20:34:16'!
+!TerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:12:57'!
+boardIsEmpty
+
+	^ (self xChips size =0) and: (self oChips size =0).! !
+
+!TerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:13:03'!
 finished
-	^ (self won: fichasX )or: (self won: fichasY).! !
 
-!TerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/24/2019 19:57:51'!
-tableroVacio
-	^ (self fichasX size =0) and: (self fichasO size =0).! !
+	^((self won: xChips )or: (self won: oChips)).! !
 
-!TerniCapilli methodsFor: 'CheckState' stamp: 'ML 5/20/2019 21:14:07'!
-won: unaListaDeFichas
-	|ficha1 ficha2 ficha3|
+!TerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:13:08'!
+isNotFinished
+
+	^((self won: xChips )or: (self won: oChips)) ifTrue: [self error: 'Juego terminado'].! !
+
+!TerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:40:10'!
+won: aChipCollection
+
+	|chipNumber1 chipNumber2 chipNumber3|
+		
+	aChipCollection sort.
+	aChipCollection size < 3 ifTrue: [^false].
+	chipNumber1 _ aChipCollection at: 1.
+	chipNumber2 _ aChipCollection at: 2.
+	chipNumber3 _ aChipCollection at: 3.
 	
-	unaListaDeFichas sort.
-	unaListaDeFichas size < 3 ifTrue: [^false].
-	ficha1 _ unaListaDeFichas at: 1.
-	ficha2 _ unaListaDeFichas at: 2.
-	ficha3 _ unaListaDeFichas at: 3.
-	
-	^(ficha1 x = ficha2 x and: ficha1 x = ficha3 x) or:
-	(ficha1 y = ficha2 y and: ficha1 y = ficha3 y) or:
-	(((ficha1 x isNotEqualTo: ficha2 x) and: (ficha1 x isNotEqualTo: ficha3 x) and: (ficha3 x isNotEqualTo: ficha2 x)) and:
-		(ficha1 y isNotEqualTo: ficha2 y) and: (ficha1 y isNotEqualTo: ficha3 y) and: (ficha3 y isNotEqualTo: ficha2 y) and:(ficha1 dist: ficha2) = (ficha2 dist: ficha3)) .
-! !
+	^(chipNumber1 x = chipNumber2 x and: chipNumber1 x = chipNumber3 x) or:
+	(chipNumber1 y = chipNumber2 y and: chipNumber1 y = chipNumber3 y) or:
+	(((chipNumber1 x isNotEqualTo: chipNumber2 x) and: (chipNumber1 x isNotEqualTo: chipNumber3 x) and: (chipNumber3 x isNotEqualTo: chipNumber2 x)) and:
+		(chipNumber1 y isNotEqualTo: chipNumber2 y) and: (chipNumber1 y isNotEqualTo: chipNumber3 y) and: (chipNumber3 y isNotEqualTo: chipNumber2 y) and:(chipNumber1 dist: chipNumber2) = (chipNumber2 dist: chipNumber3)) .! !
 
 
 !classDefinition: #TerniCapilliPlayer category: #TL!
@@ -439,13 +480,15 @@ Object subclass: #TerniCapilliPlayer
 	poolDictionaries: ''
 	category: 'TL'!
 
-!TerniCapilliPlayer methodsFor: 'as yet unclassified' stamp: 'ML 5/24/2019 19:55:03'!
-play: unPunto
-	! !
+!TerniCapilliPlayer methodsFor: 'as yet unclassified' stamp: 'n 5/25/2019 16:20:40'!
+move: unPunto to: otroPunto in: aTerniCapilliGame
 
-!TerniCapilliPlayer methodsFor: 'as yet unclassified' stamp: 'ML 5/24/2019 19:56:30'!
+	self subclassResponsibility! !
+
+!TerniCapilliPlayer methodsFor: 'as yet unclassified' stamp: 'n 5/25/2019 16:20:35'!
 play: unPunto in: aTerniCapilliGame
-	^self subclassResponsibility.
+
+	self subclassResponsibility.
 	! !
 
 
@@ -456,9 +499,16 @@ TerniCapilliPlayer subclass: #OPlayer
 	poolDictionaries: ''
 	category: 'TL'!
 
-!OPlayer methodsFor: 'as yet unclassified' stamp: 'ML 5/24/2019 20:02:12'!
+!OPlayer methodsFor: 'as yet unclassified' stamp: 'n 5/25/2019 16:20:59'!
+move: unPunto to: otroPunto in: aTerniCapilliGame
+
+	aTerniCapilliGame moveO: unPunto to: otroPunto.
+	aTerniCapilliGame changePlayer: XPlayer new.! !
+
+!OPlayer methodsFor: 'as yet unclassified' stamp: 'n 5/25/2019 16:36:46'!
 play: unPunto in: aTerniCapilliGame
-	aTerniCapilliGame jugarO: unPunto.
+
+	aTerniCapilliGame oPlaysIn: unPunto.
 	aTerniCapilliGame changePlayer: XPlayer new.! !
 
 
@@ -469,7 +519,14 @@ TerniCapilliPlayer subclass: #XPlayer
 	poolDictionaries: ''
 	category: 'TL'!
 
-!XPlayer methodsFor: 'as yet unclassified' stamp: 'ML 5/24/2019 20:02:25'!
+!XPlayer methodsFor: 'as yet unclassified' stamp: 'n 5/25/2019 16:21:07'!
+move: unPunto to: otroPunto in: aTerniCapilliGame
+
+	aTerniCapilliGame moveX: unPunto to: otroPunto.
+	aTerniCapilliGame changePlayer: OPlayer new.! !
+
+!XPlayer methodsFor: 'as yet unclassified' stamp: 'n 5/25/2019 16:37:26'!
 play: unPunto in: aTerniCapilliGame
-	aTerniCapilliGame jugarX: unPunto.
+
+	aTerniCapilliGame xPlaysIn: unPunto.
 	aTerniCapilliGame changePlayer: OPlayer new.! !
