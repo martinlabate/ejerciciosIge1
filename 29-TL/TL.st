@@ -81,7 +81,7 @@ testCantPlacedMoreThan3Chips
 	juego playIn: 2@1.
 	self should: [ juego playIn: 2@0.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'No hay mÃ¡s fichas']! !
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'No hay más fichas']! !
 
 !TestTerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:36:58'!
 testOneXChipAndOneOChipWhenEachPlayedOnce
@@ -104,7 +104,7 @@ testOneXChipWhenXPlayedOnce
 	self assert: [juego oChips isEmpty].! !
 
 
-!TestTerniCapilli methodsFor: 'CheckPosition' stamp: 'n 5/25/2019 16:41:49'!
+!TestTerniCapilli methodsFor: 'CheckPosition' stamp: 'n 5/26/2019 20:18:01'!
 testCantPlacedAChipInAInvalidPosition
 
 	|juego|
@@ -112,7 +112,7 @@ testCantPlacedAChipInAInvalidPosition
 	juego initGame.
 	self should: [ juego playIn: 0@-1. ]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'PosiciÃ³n InvÃ¡Â¡lida']	! !
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Inválida']	! !
 
 !TestTerniCapilli methodsFor: 'CheckPosition' stamp: 'n 5/25/2019 16:41:57'!
 testCantPlacedAChipOnAnOcupiedPosition
@@ -123,7 +123,7 @@ testCantPlacedAChipOnAnOcupiedPosition
 	juego playIn: 0@0.
 	self should: [ juego playIn: 0@0. ]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'PosiciÃ³n Ocupada']	! !
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Ocupada']	! !
 
 
 !TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:58'!
@@ -157,20 +157,6 @@ testAfterXMovesComesO
 	juego move: 1@1 to: 2@1.
 	self assert: (juego nextPlayer isKindOf: OPlayer).! !
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:57'!
-testCantMakeAMovementBeforeChipsArePlaced
-	|juego|
-	juego _ TerniCapilli new.
-	juego initGame.
-	juego playIn: 0@0.
-	juego playIn: 0@1.
-	juego playIn: 1@1.
-
-	self should: [juego move: 1@1 to: 1@2.]
-		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'TodavÃ­a no se puede efectuar este mvimiento']
-! !
-
 !TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:58'!
 testCantMakeAnInvalidMovement
 	|juego|
@@ -184,8 +170,37 @@ testCantMakeAnInvalidMovement
 	juego playIn: 2@1.
 	self should: [ juego move: 0@0 to: 2@2.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'Movimiento InvÃ¡Â¡lido']
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'Movimiento Invá¡lido']
 	! !
+
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/26/2019 20:21:47'!
+testCantMoveBeforeAllChipsArePlaced
+	|juego|
+	juego _ TerniCapilli new.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.
+
+	self should: [juego move: 1@1 to: 1@2.]
+		 raise: Error
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'Todavía no se puede efectuar este mvimiento']
+! !
+
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/26/2019 20:13:48'!
+testCantMoveFromAnEmptyPosition
+	|juego|
+	juego _ TerniCapilli new.
+	juego initGame.
+	juego playIn: 0@0.
+	juego playIn: 1@0.
+	juego playIn: 0@1.
+	juego playIn: 1@1.	
+	juego playIn: 2@2.	
+	juego playIn: 2@1.
+	self should: [ juego move: 2@0 to: 1@1.]
+		 raise: Error
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Desocupada']! !
 
 !TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:58'!
 testCantMoveOtherPlayersChip
@@ -214,10 +229,10 @@ testCantMoveToAnOcupiedPosition
 	juego playIn: 2@1.
 	self should: [ juego move: 0@0 to: 1@0.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'PosiciÃ³n Ocupada']
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Ocupada']
 	! !
 
-!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:58'!
+!TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/26/2019 20:17:41'!
 testCantMoveToInvalidPosition
 	|juego|
 	juego _ TerniCapilli new.
@@ -231,7 +246,7 @@ testCantMoveToInvalidPosition
 		
 	self should: [ juego move: 0@0 to: 0@-1.]
 		 raise: Error
-		 withExceptionDo: [ :anError | self assert: anError messageText = 'PosiciÃ³n InvÃ¡Â¡lida']
+		 withExceptionDo: [ :anError | self assert: anError messageText = 'Posición Inválida']
 	! !
 
 !TestTerniCapilli methodsFor: 'CheckMovemets' stamp: 'n 5/25/2019 16:36:57'!
@@ -362,7 +377,7 @@ playIn: aChipPosition
 !TerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:37:17'!
 playingIn: aChipPosition withChips: aChipsCollection
 
-	aChipsCollection size = 3 ifTrue: [self error: 'No hay mÃ¡s fichas']
+	aChipsCollection size = 3 ifTrue: [self error: 'No hay más fichas']
 	ifFalse:[aChipsCollection add: aChipPosition.]	! !
 
 !TerniCapilli methodsFor: 'Playing' stamp: 'n 5/25/2019 16:37:26'!
@@ -401,17 +416,17 @@ moving: aChipPosition to: otherChipPosition chips: aChipsCollection nextPlayer: 
 !TerniCapilli methodsFor: 'CheckPosotion' stamp: 'n 5/25/2019 16:37:52'!
 isNotOcupied: aChipPosition
 
-	^ ((xChips includes: aChipPosition) or: (oChips includes: aChipPosition)) ifTrue: [self error: 'PosiciÃ³n Ocupada'].! !
+	^ ((xChips includes: aChipPosition) or: (oChips includes: aChipPosition)) ifTrue: [self error: 'Posición Ocupada'].! !
 
 !TerniCapilli methodsFor: 'CheckPosotion' stamp: 'n 5/25/2019 16:38:05'!
 isOcupied: aChipPosition
 
-	^ ((xChips includes: aChipPosition) or: (oChips includes: aChipPosition)) ifFalse: [self error: 'PosiciÃ³n Desocupada'].! !
+	^ ((xChips includes: aChipPosition) or: (oChips includes: aChipPosition)) ifFalse: [self error: 'Posición Desocupada'].! !
 
-!TerniCapilli methodsFor: 'CheckPosotion' stamp: 'n 5/25/2019 16:38:14'!
+!TerniCapilli methodsFor: 'CheckPosotion' stamp: 'n 5/26/2019 20:17:32'!
 isValid: aChipPosition
 
-	^ (aChipPosition between: 0@0 and: 2@2) ifFalse: [self error: 'PosiciÃ³n InvÃ¡Â¡lida'].
+	^ (aChipPosition between: 0@0 and: 2@2) ifFalse: [self error: 'Posición Inválida'].
 ! !
 
 
@@ -433,12 +448,12 @@ xChips
 !TerniCapilli methodsFor: 'CheckMovements' stamp: 'n 5/25/2019 16:13:44'!
 canMakeMovement
 
-	^ ((xChips size = 3) and: (oChips size = 3)) ifFalse: [self error: 'TodavÃ­a no se puede efectuar este mvimiento']! !
+	^ ((xChips size = 3) and: (oChips size = 3)) ifFalse: [self error: 'Todavía no se puede efectuar este mvimiento']! !
 
 !TerniCapilli methodsFor: 'CheckMovements' stamp: 'n 5/25/2019 16:38:49'!
 isValidMovementFrom: aChipPosition to: otherChipPosition
 
-	^ ((aChipPosition dist: otherChipPosition) = 1) ifFalse: [self error: 'Movimiento InvÃ¡Â¡lido'].! !
+	^ ((aChipPosition dist: otherChipPosition) = 1) ifFalse: [self error: 'Movimiento Invá¡lido'].! !
 
 
 !TerniCapilli methodsFor: 'CheckState' stamp: 'n 5/25/2019 16:12:57'!
