@@ -468,20 +468,6 @@ testCantCreateCircularTranferences
 		withExceptionDo: [ :anError | self assert: [(anError messageText) = 'No se pueden crear transferencias circulares']]
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 13:41:57'!
-testCantTransferAValueFromAnAccountThatHasLessCredit
-	| unaCuenta otraCuenta |
-	
-	unaCuenta _ ReceptiveAccount new.
-	otraCuenta _ ReceptiveAccount new.
-	
-	self 
-		should: [Transfer with: 80 from: unaCuenta to: otraCuenta]
-		raise: Error
-		withExceptionDo: [ :anError | self assert: [(anError messageText) = 'La cuenta a debitar no tiene el credito suficiente']]
-	
-! !
-
 !TransferTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 13:58:51'!
 testCreateATransferenceFromAnAccountToAnotherAfectsBalancesAcounts
 	| unaCuenta otraCuenta unDeposito unaTrasnferencia actualBalanceOtraCuenta actualBalanceUnaCuenta |
@@ -989,6 +975,11 @@ Object subclass: #Transfer
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
+!Transfer methodsFor: 'as yet unclassified' stamp: 'ML 6/2/2019 12:48:17'!
+checkNotCircularTransferFrom: anAccount to: anotherAccount
+ 	(anAccount isEqualTo: anotherAccount) ifTrue: [self error:'No se pueden crear transferencias circulares'].
+! !
+
 !Transfer methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 14:02:02'!
 depositLeg
  	^depositLeg ! !
@@ -1005,10 +996,9 @@ initializeWith: aValue from: anAccount to: anotherAccount
 	self initializeWith: aValue.
 	self registerTransactionFrom: anAccount to: anotherAccount.! !
 
-!Transfer methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 13:40:29'!
+!Transfer methodsFor: 'as yet unclassified' stamp: 'ML 6/2/2019 12:48:42'!
 registerTransactionFrom: anAccount to: anotherAccount
- 	(anAccount isNotEqualTo: anotherAccount) ifFalse: [self error:'No se pueden crear transferencias circulares'].
-	(anAccount balance < value) ifTrue: [self error: 'La cuenta a debitar no tiene el credito suficiente'].
+	self checkNotCircularTransferFrom: anAccount to: anotherAccount.
 	
 	anAccount register: withdrawLeg.
 	anotherAccount register: depositLeg.! !
