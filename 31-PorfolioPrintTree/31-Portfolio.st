@@ -312,7 +312,7 @@ TestCase subclass: #ReportsTest
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!ReportsTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:29:14'!
+!ReportsTest methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:16:09'!
 testGivenAPortfolioThenTheAccountSummaryReportsItsSummary
 	|aSummary anAccount aDeposit aWithdraw aTransference anotherAccount aPortfolio |
 	anAccount _ ReceptiveAccount new.
@@ -324,15 +324,21 @@ testGivenAPortfolioThenTheAccountSummaryReportsItsSummary
 	anotherAccount _ ReceptiveAccount new.
 	
 	aTransference _ Transfer with: 200 from: anAccount to: anotherAccount. 
+	aTransference _ Transfer with: 200 from: anAccount to: anotherAccount.
 	aTransference _ Transfer with: 20 from: anotherAccount to: anAccount .
 	
 	aPortfolio _ Portfolio new.
 	aPortfolio add: anAccount.
 	
 	aSummary _ AccountSummary new.
-	self assert: ((aSummary for: aPortfolio) = 'Deposito por 1000. Extracción por 70. Salida por transferencia de 200. Entrada por transferencia de 20. Balance 750.').! !
+	self assert: ((aPortfolio manageReport: aSummary) = 'Depósito por 1000.
+Extracción por 70.
+Salida por transferencia de 200.
+Salida por transferencia de 200.
+Entrada por transferencia de 20.
+Balance 550.').! !
 
-!ReportsTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:29:04'!
+!ReportsTest methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:18:22'!
 testGivenAPortfolioThenTheTransferNetReportsItsTransferNetValue
 	|aTransferNetReporter anAccount aDeposit aWithdraw aTransference anotherAccount aPortfolio |
 	anAccount _ ReceptiveAccount new.
@@ -351,9 +357,9 @@ testGivenAPortfolioThenTheTransferNetReportsItsTransferNetValue
 	aPortfolio add: anAccount.
 	
 	aTransferNetReporter _ TransferNet new.
-	self assert: ((aTransferNetReporter for: aPortfolio) = 'Neto de transferencias -270.').! !
+	self assert: ((aPortfolio manageReport: aTransferNetReporter) = -270).! !
 
-!ReportsTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:04:24'!
+!ReportsTest methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:20:05'!
 testGivenAnAccountThenTheAccountSummaryReportsItsSummary
 	|aSummary anAccount aDeposit aWithdraw aTransference anotherAccount|
 	anAccount _ ReceptiveAccount new.
@@ -368,9 +374,13 @@ testGivenAnAccountThenTheAccountSummaryReportsItsSummary
 	aTransference _ Transfer with: 20 from: anotherAccount to: anAccount .
 	
 	aSummary _ AccountSummary new.
-	self assert: ((aSummary for: anAccount) = 'Deposito por 1000. Extracción por 70. Salida por transferencia de 200. Entrada por transferencia de 20. Balance 750.').! !
+	self assert: ((anAccount manageReport: aSummary) =  'Depósito por 1000.
+Extracción por 70.
+Salida por transferencia de 200.
+Entrada por transferencia de 20.
+Balance 750.' ).! !
 
-!ReportsTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:21:55'!
+!ReportsTest methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:20:40'!
 testGivenAnAccountThenTheTransferNetReportsItsTransferNetValue
 	|aTransferNetReporter anAccount aDeposit aWithdraw aTransference anotherAccount|
 	anAccount _ ReceptiveAccount new.
@@ -386,41 +396,41 @@ testGivenAnAccountThenTheTransferNetReportsItsTransferNetValue
 	aTransference _ Transfer with: 30 from: anotherAccount to: anAccount . 
 	
 	aTransferNetReporter _ TransferNet new.
-	self assert: ((aTransferNetReporter for: anAccount) = 'Neto de transferencias -270.').! !
+	self assert: ((anAccount manageReport: aTransferNetReporter) = -270).! !
 
-!ReportsTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:30:32'!
+!ReportsTest methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:21:17'!
 testGivenAnEmptyAccountThenTheAccountSummaryReportsItsSummary
 	|aSummary anAccount|
 	anAccount _ ReceptiveAccount new.
 	
 	aSummary _ AccountSummary new.
-	self assert: ((aSummary for: anAccount) = 'Deposito por 0. Extracción por 0. Salida por transferencia de 0. Entrada por transferencia de 0. Balance 0.').! !
+	self assert: ((anAccount manageReport: aSummary) = 'Balance 0.').! !
 
-!ReportsTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:32:32'!
+!ReportsTest methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:22:35'!
 testGivenAnEmptyAccountThenTheTransferNetReportsItsTransferNetValue
 	|aTransferNetReporter anAccount |
 	
 	anAccount _ ReceptiveAccount new.
 	
 	aTransferNetReporter _ TransferNet new.
-	self assert: ((aTransferNetReporter for: anAccount) = 'Neto de transferencias 0.').! !
+	self assert: ((anAccount manageReport: aTransferNetReporter) = 0).! !
 
-!ReportsTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:31:08'!
+!ReportsTest methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:23:00'!
 testGivenAnEmptyPortfolioThenTheAccountSummaryReportsItsSummary
 	|aSummary aPortfolio|
 	aPortfolio _ Portfolio new.
 	
 	aSummary _ AccountSummary new.
-	self assert: ((aSummary for: aPortfolio) = 'Deposito por 0. Extracción por 0. Salida por transferencia de 0. Entrada por transferencia de 0. Balance 0.').! !
+	self assert: ((aPortfolio manageReport: aSummary) = 'Balance 0.').! !
 
-!ReportsTest methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:32:01'!
+!ReportsTest methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:23:32'!
 testGivenAnEmptyPortfolioThenTheTransferNetReportsItsTransferNetValue
 	|aTransferNetReporter aPortfolio |
 	
 	aPortfolio _ Portfolio new.
 	
 	aTransferNetReporter _ TransferNet new.
-	self assert: ((aTransferNetReporter for: aPortfolio) = 'Neto de transferencias 0.').! !
+	self assert: ((aPortfolio manageReport: aTransferNetReporter) = 0).! !
 
 
 !classDefinition: #TransferTest category: #'31-Portfolio'!
@@ -545,6 +555,11 @@ transactions
 addedTo: aPortfolio
 
 	self subclassResponsibility ! !
+
+
+!Account methodsFor: 'report' stamp: 'ML 6/2/2019 23:46:45'!
+manageReport: aReport
+	^ aReport reportForAccount: self.! !
 
 
 !classDefinition: #Portfolio category: #'31-Portfolio'!
@@ -755,6 +770,12 @@ value
 	self subclassResponsibility ! !
 
 
+!AccountTransaction methodsFor: 'report' stamp: 'ML 6/3/2019 01:02:39'!
+getMessageForReport: aReport
+
+	^self subclassResponsibility ! !
+
+
 !AccountTransaction methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:39'!
 affectBalance: aBalance
 
@@ -801,6 +822,12 @@ affectBalance: aBalance
 
 	^aBalance + value ! !
 
+
+!Deposit methodsFor: 'report' stamp: 'ML 6/3/2019 01:31:15'!
+getMessageForReport: aReport
+
+	^(aReport messageForDeposit)! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Deposit class' category: #'31-Portfolio'!
@@ -820,25 +847,28 @@ AccountTransaction subclass: #TransferLeg
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!TransferLeg methodsFor: 'as yet unclassified' stamp: 'ML 5/30/2019 19:51:50'!
-affectBalance
 
-	^self subclassResponsibility ! !
-
-!TransferLeg methodsFor: 'as yet unclassified' stamp: 'ML 5/30/2019 19:49:30'!
-initializeWith: aTransfer
-
-	transfer _ aTransfer.! !
-
-!TransferLeg methodsFor: 'as yet unclassified' stamp: 'ML 5/30/2019 19:49:00'!
+!TransferLeg methodsFor: 'transfer' stamp: 'ML 5/30/2019 19:49:00'!
 transfer
 
 	^transfer! !
 
-!TransferLeg methodsFor: 'as yet unclassified' stamp: 'ML 5/30/2019 19:47:36'!
+!TransferLeg methodsFor: 'transfer' stamp: 'ML 5/30/2019 19:47:36'!
 value
 
 	^transfer value! !
+
+
+!TransferLeg methodsFor: 'balance' stamp: 'ML 5/30/2019 19:51:50'!
+affectBalance
+
+	^self subclassResponsibility ! !
+
+
+!TransferLeg methodsFor: 'initialize' stamp: 'ML 5/30/2019 19:49:30'!
+initializeWith: aTransfer
+
+	transfer _ aTransfer.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -858,10 +888,16 @@ TransferLeg subclass: #DepostiLeg
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!DepostiLeg methodsFor: 'as yet unclassified' stamp: 'ML 5/30/2019 19:48:29'!
+!DepostiLeg methodsFor: 'balance' stamp: 'ML 5/30/2019 19:48:29'!
 affectBalance: aBalance
 
 	^aBalance + self value! !
+
+
+!DepostiLeg methodsFor: 'report' stamp: 'ML 6/3/2019 01:04:01'!
+getMessageForReport: aReport
+
+	^(aReport messageForTransferDeposit).! !
 
 
 !classDefinition: #WithdrawLeg category: #'31-Portfolio'!
@@ -871,7 +907,13 @@ TransferLeg subclass: #WithdrawLeg
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!WithdrawLeg methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 14:17:30'!
+!WithdrawLeg methodsFor: 'report' stamp: 'ML 6/3/2019 01:07:54'!
+getMessageForReport: aReport
+
+	^(aReport messageForTransferWithdraw)! !
+
+
+!WithdrawLeg methodsFor: 'balance' stamp: 'n 6/1/2019 14:17:30'!
 affectBalance: aBalance
 
 	^aBalance - (self value).! !
@@ -890,10 +932,16 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
+!Withdraw methodsFor: 'value' stamp: 'ML 6/3/2019 01:11:54'!
 value
 
 	^ value! !
+
+
+!Withdraw methodsFor: 'report' stamp: 'ML 6/3/2019 01:05:00'!
+getMessageForReport: aReport
+
+	^(aReport messageForWithdraw)! !
 
 
 !Withdraw methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:15'!
@@ -920,8 +968,8 @@ Object subclass: #Reports
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!Reports methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 14:44:03'!
-for: anAccount
+!Reports methodsFor: 'as yet unclassified' stamp: 'ML 6/2/2019 23:48:34'!
+reportForAccount: anAccount
 	^self subclassResponsibility ! !
 
 !Reports methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:17:04'!
@@ -939,17 +987,40 @@ Reports subclass: #AccountSummary
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:35:34'!
-for: anAccount 
-	|depositReport withdrawReport depositByTransferenceReport withdrawByTransferenceReport accountBalance |
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:05:48'!
+messageForDeposit
+
+	^'Depósito por '.! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:07:13'!
+messageForTransferDeposit
+
+	^'Entrada por transferencia de '.! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:06:57'!
+messageForTransferWithdraw
+
+	^'Salida por transferencia de '.! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:07:19'!
+messageForWithdraw
+
+	^'Extracción por '.! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:13:53'!
+reportForAccount: anAccount
+	|accountBalance|
 	
-	depositReport _ self reportSummaryByClass: Deposit for: anAccount.
-	withdrawReport _ self reportSummaryByClass: Withdraw for: anAccount.
-	depositByTransferenceReport _ self reportSummaryByClass: DepostiLeg for: anAccount.
-	withdrawByTransferenceReport _ self reportSummaryByClass: WithdrawLeg for: anAccount.
-	accountBalance _ depositReport-withdrawReport+depositByTransferenceReport-withdrawByTransferenceReport.
+	accountBalance _ anAccount balance printString.
 	
-	^('Deposito por ',depositReport printString, '. Extracción por ',withdrawReport printString, '. Salida por transferencia de ',withdrawByTransferenceReport printString, '. Entrada por transferencia de ',depositByTransferenceReport printString, '. Balance ',accountBalance printString,'.'). ! !
+	^String streamContents: [:aStream| 
+	anAccount transactions do:[:aTransaction |
+		aStream nextPutAll: (aTransaction getMessageForReport: self).
+		aStream nextPutAll: (aTransaction value) printString.
+		aStream nextPutAll: '.'.
+		aStream newLine.].
+		aStream nextPutAll: ('Balance ', accountBalance, '.').
+	].! !
 
 
 !classDefinition: #TransferNet category: #'31-Portfolio'!
@@ -959,12 +1030,12 @@ Reports subclass: #TransferNet
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:22:05'!
-for: anAccount
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:17:47'!
+reportForAccount: anAccount
 	| depositByTransferenceReport withdrawByTransferenceReport |
 	depositByTransferenceReport _ self reportSummaryByClass: DepostiLeg for: anAccount.
 	withdrawByTransferenceReport _ self reportSummaryByClass: WithdrawLeg for: anAccount.
-	^('Neto de transferencias ', (depositByTransferenceReport - withdrawByTransferenceReport) printString, '.' )
+	^(depositByTransferenceReport - withdrawByTransferenceReport)
 ! !
 
 
