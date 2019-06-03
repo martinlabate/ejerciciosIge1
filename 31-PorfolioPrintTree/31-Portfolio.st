@@ -823,10 +823,10 @@ affectBalance: aBalance
 	^aBalance + value ! !
 
 
-!Deposit methodsFor: 'report' stamp: 'ML 6/3/2019 01:31:15'!
+!Deposit methodsFor: 'report' stamp: 'n 6/3/2019 09:30:32'!
 getMessageForReport: aReport
 
-	^(aReport messageForDeposit)! !
+	^(aReport messageForDeposit: self)! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -846,7 +846,6 @@ AccountTransaction subclass: #TransferLeg
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: '31-Portfolio'!
-
 
 !TransferLeg methodsFor: 'transfer' stamp: 'ML 5/30/2019 19:49:00'!
 transfer
@@ -894,10 +893,10 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!DepostiLeg methodsFor: 'report' stamp: 'ML 6/3/2019 01:04:01'!
+!DepostiLeg methodsFor: 'report' stamp: 'n 6/3/2019 09:30:45'!
 getMessageForReport: aReport
 
-	^(aReport messageForTransferDeposit).! !
+	^(aReport messageForTransferDeposit: self).! !
 
 
 !classDefinition: #WithdrawLeg category: #'31-Portfolio'!
@@ -907,10 +906,10 @@ TransferLeg subclass: #WithdrawLeg
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!WithdrawLeg methodsFor: 'report' stamp: 'ML 6/3/2019 01:07:54'!
+!WithdrawLeg methodsFor: 'report' stamp: 'n 6/3/2019 09:31:01'!
 getMessageForReport: aReport
 
-	^(aReport messageForTransferWithdraw)! !
+	^(aReport messageForTransferWithdraw: self)! !
 
 
 !WithdrawLeg methodsFor: 'balance' stamp: 'n 6/1/2019 14:17:30'!
@@ -938,10 +937,10 @@ value
 	^ value! !
 
 
-!Withdraw methodsFor: 'report' stamp: 'ML 6/3/2019 01:05:00'!
+!Withdraw methodsFor: 'report' stamp: 'n 6/3/2019 09:31:11'!
 getMessageForReport: aReport
 
-	^(aReport messageForWithdraw)! !
+	^(aReport messageForWithdraw: self)! !
 
 
 !Withdraw methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:15'!
@@ -972,13 +971,6 @@ Object subclass: #Reports
 reportForAccount: anAccount
 	^self subclassResponsibility ! !
 
-!Reports methodsFor: 'as yet unclassified' stamp: 'n 6/1/2019 15:17:04'!
-reportSummaryByClass: aClass for: anAccount 
-	|reportValue|
-	reportValue _ 0.
-	(anAccount transactions) do: [:aTransaction|  (aTransaction isKindOf: aClass) ifTrue: [reportValue _ aTransaction value + reportValue.]].
-	^reportValue.! !
-
 
 !classDefinition: #AccountSummary category: #'31-Portfolio'!
 Reports subclass: #AccountSummary
@@ -987,27 +979,27 @@ Reports subclass: #AccountSummary
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:05:48'!
-messageForDeposit
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:23:57'!
+messageForDeposit: aDeposit
 
-	^'Depósito por '.! !
+	^'Depósito por ',(aDeposit value printString).! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:07:13'!
-messageForTransferDeposit
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:23:42'!
+messageForTransferDeposit: aTransfrDeposit
 
-	^'Entrada por transferencia de '.! !
+	^'Entrada por transferencia de ',(aTransfrDeposit value printString).! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:06:57'!
-messageForTransferWithdraw
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:23:31'!
+messageForTransferWithdraw: aTransferWithdraw
 
-	^'Salida por transferencia de '.! !
+	^'Salida por transferencia de ',(aTransferWithdraw value printString).! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:07:19'!
-messageForWithdraw
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:23:14'!
+messageForWithdraw: aWithdraw
 
-	^'Extracción por '.! !
+	^'Extracción por ',(aWithdraw value printString).! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:13:53'!
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:25:01'!
 reportForAccount: anAccount
 	|accountBalance|
 	
@@ -1016,7 +1008,6 @@ reportForAccount: anAccount
 	^String streamContents: [:aStream| 
 	anAccount transactions do:[:aTransaction |
 		aStream nextPutAll: (aTransaction getMessageForReport: self).
-		aStream nextPutAll: (aTransaction value) printString.
 		aStream nextPutAll: '.'.
 		aStream newLine.].
 		aStream nextPutAll: ('Balance ', accountBalance, '.').
@@ -1030,12 +1021,26 @@ Reports subclass: #TransferNet
 	poolDictionaries: ''
 	category: '31-Portfolio'!
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'ML 6/3/2019 01:17:47'!
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:28:49'!
+messageForDeposit: aDeposit
+	^0! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:29:31'!
+messageForTransferDeposit: aTransfrDeposit
+	^aTransfrDeposit value! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:29:48'!
+messageForTransferWithdraw: aTransferWithdraw
+	^(-1)*(aTransferWithdraw value)! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:30:01'!
+messageForWithdraw: aWithdraw
+	^0.! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'n 6/3/2019 09:27:30'!
 reportForAccount: anAccount
-	| depositByTransferenceReport withdrawByTransferenceReport |
-	depositByTransferenceReport _ self reportSummaryByClass: DepostiLeg for: anAccount.
-	withdrawByTransferenceReport _ self reportSummaryByClass: WithdrawLeg for: anAccount.
-	^(depositByTransferenceReport - withdrawByTransferenceReport)
+	
+	^((anAccount transactions) inject: 0 into: [:sum :nextTransaction| sum + (nextTransaction getMessageForReport: self)]).
 ! !
 
 
