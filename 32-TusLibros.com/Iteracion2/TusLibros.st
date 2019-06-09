@@ -344,10 +344,10 @@ test12TheCartIsNotEmptyAfterAFeilurePurchase
 	
 	! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 19:31:09'!
-test13
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/9/2019 20:26:33'!
+test13SalesBookHasTheCorrectBooksBought
 
-	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantSuccess |
+	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantSuccess pepeSalesBook |
 	aCatalog _ CartTest new aCatalog.
 	aCatalog at: 'HP' put: (500*peso).
 	aCatalog at: 'HT' put: (700*peso).
@@ -365,7 +365,11 @@ test13
 
 	merchantSuccess _ MerchantSuccess new.
 	merchantSim _ MerchantProcessorSimulator forFailure: merchantSuccess .
- 	aCheckout finalizePurchase: merchantSim .
+ 	aCheckout finalizePurchase: merchantSim.
+	pepeSalesBook _ aCheckout salesBook associationAt: aPerson.
+	self assert: (pepeSalesBook value includes: 'HP').
+	self assert: (pepeSalesBook value includes: 'HT').
+	self assert: (pepeSalesBook value includes: 'HV').
 	! !
 
 
@@ -399,6 +403,10 @@ occurrencesOf: anItem
 
 	^items occurrencesOf: anItem  ! !
 
+!Cart methodsFor: 'queries' stamp: 'ML 6/7/2019 18:29:44'!
+total
+	^ items inject: (0*peso) into: [:atotal :anItem| (catalog at: anItem) + atotal ]! !
+
 
 !Cart methodsFor: 'testing' stamp: 'HernanWilkinson 6/17/2013 17:44'!
 includes: anItem
@@ -424,18 +432,23 @@ add: aQuantity of: anItem
 	
 	1 to: aQuantity do: [:aNumber | items add: anItem]! !
 
-!Cart methodsFor: 'adding' stamp: 'n 6/9/2019 20:04:02'!
+!Cart methodsFor: 'adding' stamp: 'ML 6/9/2019 20:41:30'!
 addItemsToBook: aSalesBook ofClient: aClient
-	(items) do: [:anitem | aSalesBook at: aClient ifAbsent:[aSalesBook at: aClient put: anitem] ]! !
+
+	|cartItems|
+	aSalesBook at: aClient 
+		ifPresent:[
+			cartItems _ aSalesBook associationAt: aClient.
+			cartItems addAll: items.
+			aSalesBook at: aClient put: cartItems] 
+		ifAbsent: [
+			aSalesBook at: aClient put: items.
+			].! !
 
 
-!Cart methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:36:51'!
+!Cart methodsFor: 'modify' stamp: 'n 6/9/2019 17:36:51'!
 getEmpty
 	items _ OrderedCollection new.! !
-
-!Cart methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 18:29:44'!
-total
-	^ items inject: (0*peso) into: [:atotal :anItem| (catalog at: anItem) + atotal ]! !
 
 
 !Cart methodsFor: 'nil' stamp: 'n 6/9/2019 18:27:34'!
@@ -541,6 +554,10 @@ Object subclass: #CreditCard
 checkValidCardNumber: aNumber
 	aNumber decimalDigitLength = 16 ifFalse: [self error:'Numero de tarjeta invalido'].! !
 
+!CreditCard methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 20:44:07'!
+checkValidNumber: aNumber
+	aNumber decimalDigitLength = 16 ifFalse: [self error:'Numero de tarjeta invalido'].! !
+
 !CreditCard methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 20:23:17'!
 expirationMonth
 	^expirationMonth! !
@@ -609,6 +626,7 @@ Object subclass: #MerchantProcessorSimulatorState
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
+
 !MerchantProcessorSimulatorState methodsFor: 'nil' stamp: 'n 6/9/2019 17:50:17'!
 value
 	self subclassResponsibility ! !
@@ -621,6 +639,7 @@ MerchantProcessorSimulatorState subclass: #MerchantFailure
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
+
 !MerchantFailure methodsFor: 'nil' stamp: 'n 6/9/2019 17:50:01'!
 value
 	^1! !
@@ -632,6 +651,7 @@ MerchantProcessorSimulatorState subclass: #MerchantSuccess
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
+
 
 !MerchantSuccess methodsFor: 'nil' stamp: 'n 6/9/2019 17:49:53'!
 value
