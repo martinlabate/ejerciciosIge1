@@ -399,10 +399,6 @@ occurrencesOf: anItem
 
 	^items occurrencesOf: anItem  ! !
 
-!Cart methodsFor: 'queries' stamp: 'ML 6/7/2019 18:29:44'!
-total
-	^ items inject: (0*peso) into: [:atotal :anItem| (catalog at: anItem) + atotal ]! !
-
 
 !Cart methodsFor: 'testing' stamp: 'HernanWilkinson 6/17/2013 17:44'!
 includes: anItem
@@ -428,13 +424,21 @@ add: aQuantity of: anItem
 	
 	1 to: aQuantity do: [:aNumber | items add: anItem]! !
 
+!Cart methodsFor: 'adding' stamp: 'n 6/9/2019 20:04:02'!
+addItemsToBook: aSalesBook ofClient: aClient
+	(items) do: [:anitem | aSalesBook at: aClient ifAbsent:[aSalesBook at: aClient put: anitem] ]! !
 
-!Cart methodsFor: 'modify' stamp: 'n 6/9/2019 17:36:51'!
+
+!Cart methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:36:51'!
 getEmpty
 	items _ OrderedCollection new.! !
 
+!Cart methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 18:29:44'!
+total
+	^ items inject: (0*peso) into: [:atotal :anItem| (catalog at: anItem) + atotal ]! !
 
-!Cart methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 18:27:34'!
+
+!Cart methodsFor: 'nil' stamp: 'n 6/9/2019 18:27:34'!
 items
 	^ items! !
 
@@ -505,9 +509,11 @@ validateCard
 	ifFalse: [self error: 'La tarjeta está vencida'].
 ! !
 
-!CheckOut methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 19:25:38'!
+
+!CheckOut methodsFor: 'nil' stamp: 'n 6/9/2019 20:04:34'!
 writeSale
-	(cart items) do: [:anitem | salesBook at: client ifAbsent:[salesBook at: client put: anitem] ]! !
+	cart addItemsToBook: salesBook ofClient: client.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -603,7 +609,7 @@ Object subclass: #MerchantProcessorSimulatorState
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!MerchantProcessorSimulatorState methodsFor: 'answer' stamp: 'n 6/9/2019 17:50:17'!
+!MerchantProcessorSimulatorState methodsFor: 'nil' stamp: 'n 6/9/2019 17:50:17'!
 value
 	self subclassResponsibility ! !
 
@@ -615,7 +621,7 @@ MerchantProcessorSimulatorState subclass: #MerchantFailure
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!MerchantFailure methodsFor: 'answer' stamp: 'n 6/9/2019 17:50:01'!
+!MerchantFailure methodsFor: 'nil' stamp: 'n 6/9/2019 17:50:01'!
 value
 	^1! !
 
@@ -627,6 +633,6 @@ MerchantProcessorSimulatorState subclass: #MerchantSuccess
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!MerchantSuccess methodsFor: 'answer' stamp: 'n 6/9/2019 17:49:53'!
+!MerchantSuccess methodsFor: 'nil' stamp: 'n 6/9/2019 17:49:53'!
 value
 	^0! !
