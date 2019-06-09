@@ -235,10 +235,10 @@ test07AnInvalidCardShouldRiseError
 	raise: Error
 	withExceptionDo: [:anError| self assert: (anError messageText) = 'Numero de tarjeta invalido'].! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:23:03'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:54:05'!
 test08FaildPurchaseSholdRiseError
 
-	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
+	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantFeilure |
 	aCatalog _ CartTest new aCatalog.
 	aCatalog at: 'HP' put: (500*peso).
 	aSalesBook _ CartTest new aSalesBook.
@@ -251,16 +251,17 @@ test08FaildPurchaseSholdRiseError
 	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
 
-	merchantSim _ MerchantProcessorSimulator forFailure: true.
+	merchantFeilure _ MerchantFailure new.
+	merchantSim _ MerchantProcessorSimulator forFailure: merchantFeilure .
 	self should:[aCheckout finalizePurchase: merchantSim]
 		raise: Error
 		withExceptionDo: [:anError | self assert: anError messageText = 'Purchase faild horribly']
 ! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:22:11'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:52:49'!
 test09PurchaseCanBeSuccesful
 
-	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
+	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantSuccess |
 	aCatalog _ CartTest new aCatalog.
 	aCatalog at: 'HP' put: (500*peso).
 	aSalesBook _ CartTest new aSalesBook.
@@ -272,11 +273,12 @@ test09PurchaseCanBeSuccesful
 	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
 
-	merchantSim _ MerchantProcessorSimulator forFailure: false.
+	merchantSuccess _ MerchantSuccess new.
+	merchantSim _ MerchantProcessorSimulator forFailure: merchantSuccess .
 	
 	self assert: (aCheckout finalizePurchase: merchantSim).! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:19:59'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:30:23'!
 test10ACheckoutKnowsItsSalesBook
 	| aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
 	aCatalog _ CartTest new aCatalog.
@@ -292,7 +294,79 @@ test10ACheckoutKnowsItsSalesBook
 	aCreditCard _ 1234.
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook.
 	
-	self assert: (aCheckout card = aCreditCard)! !
+	self assert: (aCheckout salesBook = aSalesBook )! !
+
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:55:50'!
+test11TheCartIsEmptyAfterASuccesfulPurchase
+
+	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantSuccess |
+	aCatalog _ CartTest new aCatalog.
+	aCatalog at: 'HP' put: (500*peso).
+	aSalesBook _ CartTest new aSalesBook.
+	aCart _ Cart acceptingItemsOf: aCatalog.
+	
+	aCart add: 'HP'.
+	
+	aPerson _ 'Pepe'.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
+
+	merchantSuccess _ MerchantSuccess new.
+	merchantSim _ MerchantProcessorSimulator forFailure: merchantSuccess .
+	
+	self assert: ((aCheckout finalizePurchase: merchantSim) and: ((aCheckout cart) isEmpty))
+	
+	! !
+
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:56:22'!
+test12TheCartIsNotEmptyAfterAFeilurePurchase
+
+	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantFailure |
+	aCatalog _ CartTest new aCatalog.
+	aCatalog at: 'HP' put: (500*peso).
+	aSalesBook _ CartTest new aSalesBook.
+
+	aCart _ Cart acceptingItemsOf: aCatalog.
+	
+	aCart add: 'HP'.
+	
+	aPerson _ 'Pepe'.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
+
+	merchantFailure _ MerchantFailure new.
+	merchantSim _ MerchantProcessorSimulator forFailure: merchantFailure.
+	self should:[aCheckout finalizePurchase: merchantSim]
+		raise: Error
+		withExceptionDo: [:anError | self assert: anError messageText = 'Purchase faild horribly'].
+	
+	self deny: (((aCheckout cart) isEmpty))
+	
+	! !
+
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 19:31:09'!
+test13
+
+	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantSuccess |
+	aCatalog _ CartTest new aCatalog.
+	aCatalog at: 'HP' put: (500*peso).
+	aCatalog at: 'HT' put: (700*peso).
+	aCatalog at: 'HV' put: (800*peso).
+	aSalesBook _ CartTest new aSalesBook.
+	aCart _ Cart acceptingItemsOf: aCatalog.
+	
+	aCart add: 'HP'.
+	aCart add: 'HT'.
+	aCart add: 'HV'.
+	
+	aPerson _ 'Pepe'.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
+
+	merchantSuccess _ MerchantSuccess new.
+	merchantSim _ MerchantProcessorSimulator forFailure: merchantSuccess .
+ 	aCheckout finalizePurchase: merchantSim .
+	! !
 
 
 !classDefinition: #Cart category: #TusLibros!
@@ -325,6 +399,10 @@ occurrencesOf: anItem
 
 	^items occurrencesOf: anItem  ! !
 
+!Cart methodsFor: 'queries' stamp: 'ML 6/7/2019 18:29:44'!
+total
+	^ items inject: (0*peso) into: [:atotal :anItem| (catalog at: anItem) + atotal ]! !
+
 
 !Cart methodsFor: 'testing' stamp: 'HernanWilkinson 6/17/2013 17:44'!
 includes: anItem
@@ -351,9 +429,14 @@ add: aQuantity of: anItem
 	1 to: aQuantity do: [:aNumber | items add: anItem]! !
 
 
-!Cart methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 18:29:44'!
-total
-	^ items inject: (0*peso) into: [:atotal :anItem| (catalog at: anItem) + atotal ]! !
+!Cart methodsFor: 'modify' stamp: 'n 6/9/2019 17:36:51'!
+getEmpty
+	items _ OrderedCollection new.! !
+
+
+!Cart methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 18:27:34'!
+items
+	^ items! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -386,18 +469,21 @@ cart
 client
 	^client ! !
 
-!CheckOut methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:11:23'!
+!CheckOut methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 18:03:52'!
 finalizePurchase: aMerchantProcessor
 	((aMerchantProcessor doPurchaseWithCard: card number withExpiration: ((card expirationMonth asString) , (card expirationYear asString)) for: card owner forAmount: self total) = 1 )
 	ifTrue:[self error: 'Purchase faild horribly']
-	ifFalse:[^true]! !
+	ifFalse:[
+		self writeSale.
+		cart getEmpty. 
+		^true].! !
 
-!CheckOut methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:18:27'!
-initializeWith: aCart of: aString withCard: aSmallInteger andSalesBook: aSalesBook
+!CheckOut methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:28:48'!
+initializeWith: aCart of: aPerson withCard: aCardNumber andSalesBook: aSalesBook
 	aCart isEmpty ifTrue: [self error: 'Cant checkout an empty cart'].
 	cart _ aCart.
-	client _ aString.
-	card _ aSmallInteger .
+	client _ aPerson.
+	card _ aCardNumber .
 	salesBook _ aSalesBook.! !
 
 !CheckOut methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:17:58'!
@@ -418,6 +504,10 @@ validateCard
 	    and: (hoy monthIndex  > card expirationMonth) ) ) 
 	ifFalse: [self error: 'La tarjeta está vencida'].
 ! !
+
+!CheckOut methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 19:25:38'!
+writeSale
+	(cart items) do: [:anitem | salesBook at: client ifAbsent:[salesBook at: client put: anitem] ]! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -441,8 +531,8 @@ Object subclass: #CreditCard
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!CreditCard methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 20:44:07'!
-checkValidNumber: aNumber
+!CreditCard methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 18:22:21'!
+checkValidCardNumber: aNumber
 	aNumber decimalDigitLength = 16 ifFalse: [self error:'Numero de tarjeta invalido'].! !
 
 !CreditCard methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 20:23:17'!
@@ -453,9 +543,9 @@ expirationMonth
 expirationYear
 	^expirationYear ! !
 
-!CreditCard methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 20:38:11'!
+!CreditCard methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 18:22:21'!
 initializeWith: aPerson number: aNumber expirationMonth: aMonth expitationYear: aYear
-	self checkValidNumber: aNumber.
+	self checkValidCardNumber: aNumber.
 	owner _ aPerson .
 	number _ aNumber .
 	expirationYear _ aYear.
@@ -487,13 +577,13 @@ Object subclass: #MerchantProcessorSimulator
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!MerchantProcessorSimulator methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:14:42'!
+!MerchantProcessorSimulator methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:57:21'!
 doPurchaseWithCard: aCardNumber withExpiration: anExpirationDate for: aCardOwner forAmount: anAmount.
-	fail ifTrue:[^1] ifFalse:[^0] ! !
+	^fail value.! !
 
-!MerchantProcessorSimulator methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 20:56:51'!
-intitializeForFailure: aBoolean
-	fail _ aBoolean .! !
+!MerchantProcessorSimulator methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:48:08'!
+intitializeForFailure: aMerchantState
+	fail _ aMerchantState .! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -504,3 +594,39 @@ MerchantProcessorSimulator class
 !MerchantProcessorSimulator class methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 20:57:32'!
 forFailure: aBoolean
 	^self new intitializeForFailure: aBoolean.! !
+
+
+!classDefinition: #MerchantProcessorSimulatorState category: #TusLibros!
+Object subclass: #MerchantProcessorSimulatorState
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TusLibros'!
+
+!MerchantProcessorSimulatorState methodsFor: 'answer' stamp: 'n 6/9/2019 17:50:17'!
+value
+	self subclassResponsibility ! !
+
+
+!classDefinition: #MerchantFailure category: #TusLibros!
+MerchantProcessorSimulatorState subclass: #MerchantFailure
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TusLibros'!
+
+!MerchantFailure methodsFor: 'answer' stamp: 'n 6/9/2019 17:50:01'!
+value
+	^1! !
+
+
+!classDefinition: #MerchantSuccess category: #TusLibros!
+MerchantProcessorSimulatorState subclass: #MerchantSuccess
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TusLibros'!
+
+!MerchantSuccess methodsFor: 'answer' stamp: 'n 6/9/2019 17:49:53'!
+value
+	^0! !
