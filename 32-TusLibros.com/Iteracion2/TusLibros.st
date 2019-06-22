@@ -143,7 +143,7 @@ test01CantDoACheckoutOfAnEmptyCart
 	withExceptionDo: [:anError| 
 		self assert: 'Cant checkout an empty cart' equals: anError messageText.].! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:27:48'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:50:32'!
 test02CheckoutKnowsItsClient
 	| aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
 	aCatalog _ CartTest new aCatalog.
@@ -154,12 +154,12 @@ test02CheckoutKnowsItsClient
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ 1234.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 07 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook.
 	
 	self assert: (aCheckout client = aPerson )! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:25:23'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:50:42'!
 test03ACheckoutKnowsItsCart
 	| aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
 	aCatalog _ CartTest new aCatalog.
@@ -171,12 +171,12 @@ test03ACheckoutKnowsItsCart
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ 1234.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 08 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook.
 	
 	self assert: (aCheckout cart = aCart )! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:24:24'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:50:51'!
 test04ACheckoutKnowsItsCard
 	| aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
 	aCatalog _ CartTest new aCatalog.
@@ -188,12 +188,12 @@ test04ACheckoutKnowsItsCard
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ 1234.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 09 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook.
 	
 	self assert: (aCheckout card = aCreditCard)! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:23:58'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:50:59'!
 test05ACheckoutKnowsTotalToPurchase
 	| aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
 	aCatalog _ CartTest new aCatalog.
@@ -204,12 +204,12 @@ test05ACheckoutKnowsTotalToPurchase
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ 1234.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 08 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
 	
 	self assert: (aCheckout total = (500*peso))! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 21:23:36'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:51:08'!
 test06AnExipredCardShouldRiseError
 	| aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
 	aCatalog _ CartTest new aCatalog.
@@ -221,21 +221,21 @@ test06AnExipredCardShouldRiseError
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook.
 	
 	self should: [aCheckout validateCard]
 	raise: Error
 	withExceptionDo: [:anError| self assert: (anError messageText) = 'La tarjeta está vencida'].! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/7/2019 20:39:46'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:51:15'!
 test07AnInvalidCardShouldRiseError
 
-	self should: [CreditCard with: 'aPerson' number: 1234 expirationMonth: 06 expirationYear: 2019.]
+	self should: [CreditCard with: 'aPerson' number: 1234 expirationMonth: 06 expirationYear: (Date today yearNumber).]
 	raise: Error
 	withExceptionDo: [:anError| self assert: (anError messageText) = 'Numero de tarjeta invalido'].! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:54:05'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:51:23'!
 test08FaildPurchaseSholdRiseError
 
 	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantFeilure |
@@ -248,7 +248,7 @@ test08FaildPurchaseSholdRiseError
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
 
 	merchantFeilure _ MerchantFailure new.
@@ -258,7 +258,7 @@ test08FaildPurchaseSholdRiseError
 		withExceptionDo: [:anError | self assert: anError messageText = 'Purchase faild horribly']
 ! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:52:49'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:51:31'!
 test09PurchaseCanBeSuccesful
 
 	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantSuccess |
@@ -270,7 +270,7 @@ test09PurchaseCanBeSuccesful
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
 
 	merchantSuccess _ MerchantSuccess new.
@@ -278,7 +278,7 @@ test09PurchaseCanBeSuccesful
 	
 	self assert: (aCheckout finalizePurchase: merchantSim).! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:30:23'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:51:40'!
 test10ACheckoutKnowsItsSalesBook
 	| aCart aCreditCard aPerson aCatalog aCheckout aSalesBook |
 	aCatalog _ CartTest new aCatalog.
@@ -291,12 +291,12 @@ test10ACheckoutKnowsItsSalesBook
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ 1234.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 09 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook.
 	
 	self assert: (aCheckout salesBook = aSalesBook )! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:55:50'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:51:47'!
 test11TheCartIsEmptyAfterASuccesfulPurchase
 
 	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantSuccess |
@@ -308,7 +308,7 @@ test11TheCartIsEmptyAfterASuccesfulPurchase
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
 
 	merchantSuccess _ MerchantSuccess new.
@@ -318,7 +318,7 @@ test11TheCartIsEmptyAfterASuccesfulPurchase
 	
 	! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:56:22'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:51:55'!
 test12TheCartIsNotEmptyAfterAFeilurePurchase
 
 	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantFailure |
@@ -331,7 +331,7 @@ test12TheCartIsNotEmptyAfterAFeilurePurchase
 	aCart add: 'HP'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
 
 	merchantFailure _ MerchantFailure new.
@@ -344,7 +344,7 @@ test12TheCartIsNotEmptyAfterAFeilurePurchase
 	
 	! !
 
-!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'ML 6/9/2019 20:26:33'!
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:52:03'!
 test13SalesBookHasTheCorrectBooksBought
 
 	| merchantSim aCart aCreditCard aPerson aCatalog aCheckout aSalesBook merchantSuccess pepeSalesBook |
@@ -360,7 +360,7 @@ test13SalesBookHasTheCorrectBooksBought
 	aCart add: 'HV'.
 	
 	aPerson _ 'Pepe'.
-	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: 2019.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: (Date today yearNumber).
 	aCheckout _ CheckOut with: aCart of: aPerson withCard: aCreditCard andSalesBook: aSalesBook .
 
 	merchantSuccess _ MerchantSuccess new.
@@ -371,6 +371,32 @@ test13SalesBookHasTheCorrectBooksBought
 	self assert: (pepeSalesBook value includes: 'HT').
 	self assert: (pepeSalesBook value includes: 'HV').
 	! !
+
+!CheckOutTest methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:53:23'!
+test14WongCardOwnerRaiseError
+
+	| aCart aCreditCard aPerson aCatalog aSalesBook anotherPerson |
+	aCatalog _ CartTest new aCatalog.
+	aCatalog at: 'HP' put: (500*peso).
+	aCatalog at: 'HT' put: (700*peso).
+	aCatalog at: 'HV' put: (800*peso).
+	aSalesBook _ CartTest new aSalesBook.
+	aCart _ Cart acceptingItemsOf: aCatalog.
+	
+	aCart add: 'HP'.
+	aCart add: 'HT'.
+	aCart add: 'HV'.
+	
+	aPerson _ 'Pepe'.
+	anotherPerson _ 'Juan'.
+	aCreditCard _ CreditCard with: aPerson number: 1234567891234567 expirationMonth: 06 expirationYear: (Date today yearNumber).
+	self 
+	should: [CheckOut with: aCart of: anotherPerson withCard: aCreditCard andSalesBook: aSalesBook .] 
+	raise: Error 
+	withExceptionDo: [:anError| self assert: anError messageText = 'Tarjeta equivocada']
+	
+
+! !
 
 
 !classDefinition: #Cart category: #TusLibros!
@@ -446,14 +472,14 @@ addItemsToBook: aSalesBook ofClient: aClient
 			].! !
 
 
-!Cart methodsFor: 'modify' stamp: 'n 6/9/2019 17:36:51'!
-getEmpty
-	items _ OrderedCollection new.! !
-
-
 !Cart methodsFor: 'nil' stamp: 'n 6/9/2019 18:27:34'!
 items
 	^ items! !
+
+
+!Cart methodsFor: 'modify' stamp: 'n 6/9/2019 17:36:51'!
+getEmpty
+	items _ OrderedCollection new.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -495,9 +521,10 @@ finalizePurchase: aMerchantProcessor
 		cart getEmpty. 
 		^true].! !
 
-!CheckOut methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 17:28:48'!
+!CheckOut methodsFor: 'as yet unclassified' stamp: 'n 6/9/2019 20:46:58'!
 initializeWith: aCart of: aPerson withCard: aCardNumber andSalesBook: aSalesBook
 	aCart isEmpty ifTrue: [self error: 'Cant checkout an empty cart'].
+	(aCardNumber owner = aPerson) ifFalse: [self error: 'Tarjeta equivocada'].
 	cart _ aCart.
 	client _ aPerson.
 	card _ aCardNumber .
@@ -626,7 +653,6 @@ Object subclass: #MerchantProcessorSimulatorState
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-
 !MerchantProcessorSimulatorState methodsFor: 'nil' stamp: 'n 6/9/2019 17:50:17'!
 value
 	self subclassResponsibility ! !
@@ -639,7 +665,6 @@ MerchantProcessorSimulatorState subclass: #MerchantFailure
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-
 !MerchantFailure methodsFor: 'nil' stamp: 'n 6/9/2019 17:50:01'!
 value
 	^1! !
@@ -651,7 +676,6 @@ MerchantProcessorSimulatorState subclass: #MerchantSuccess
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
-
 
 !MerchantSuccess methodsFor: 'nil' stamp: 'n 6/9/2019 17:49:53'!
 value
