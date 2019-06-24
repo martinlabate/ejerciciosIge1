@@ -5,19 +5,24 @@ TestCase subclass: #ApiRestInternaTest
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 21:38:03'!
+!ApiRestInternaTest methodsFor: 'setUp' stamp: 'ML 6/23/2019 21:38:03'!
 debit: anAmount from: aCreditCard 
 
 	^debitBehavior value: anAmount value: aCreditCard ! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 22:42:01'!
+!ApiRestInternaTest methodsFor: 'setUp' stamp: 'ML 6/23/2019 22:42:01'!
 setUp 
 
 	testObjectsFactory := StoreTestObjectsFactory new.
 	debitBehavior := [ :anAmount :aCreditCard | ].
 	validatorBehavior _ [:anUserId :aPasword| ].! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 23:17:50'!
+!ApiRestInternaTest methodsFor: 'setUp' stamp: 'ML 6/23/2019 23:01:21'!
+validate: aClienteID withPassword: aPassword 
+	^validatorBehavior value: aClienteID value: aPassword ! !
+
+
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/23/2019 23:17:50'!
 testAddingBookToCartAddsTheBook
 	
 	|aCartId unaCaraInterna clienteID password |
@@ -29,7 +34,7 @@ testAddingBookToCartAddsTheBook
 	self assert: ((unaCaraInterna listCart: aCartId) size = 1).	
 	self assert: ((unaCaraInterna listCart: aCartId) includes: ((testObjectsFactory itemSellByTheStore))).! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 23:09:28'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/23/2019 23:09:28'!
 testAddingCartAddsCart
 	
 	| unaCaraInterna clienteID password |
@@ -40,7 +45,7 @@ testAddingCartAddsCart
 	
 	self deny: (unaCaraInterna listCarts isEmpty).! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 00:21:59'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/24/2019 00:21:59'!
 testCanGetClientPurchases
 	
 	|aCartId unaCaraInterna clienteID password otherClientId clientPurchases |
@@ -61,15 +66,7 @@ testCanGetClientPurchases
 	self assert: ((clientPurchases items) includes: (testObjectsFactory itemSellByTheStore)).
 	self assert: (((clientPurchases items) occurrencesOf: (testObjectsFactory itemSellByTheStore)) = 5)! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 01:28:06'!
-testCannotAddBooksInexistantCart
-	
-	|aCartId unaCaraInterna |
-	unaCaraInterna _ ApiRestInterna withCatalog: testObjectsFactory defaultCatalog merchatProcessor:self andValidator: self.
-	aCartId _ 1.
-	self should: [unaCaraInterna add: (testObjectsFactory itemSellByTheStore) toCart: aCartId withQuantity: 4.] raise: Error withExceptionDo: [:anError| self assert: (anError messageText = 'Inexistant Cart Id')]. ! !
-
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 01:24:19'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/24/2019 01:24:19'!
 testCannotAddBooksToExpiredCart
 	
 	|aCartId unaCaraInterna clienteID password aCart |
@@ -83,7 +80,15 @@ testCannotAddBooksToExpiredCart
 	
 	self should: [unaCaraInterna add: (testObjectsFactory itemSellByTheStore) toCart: aCartId withQuantity: 4.] raise: Error withExceptionDo: [:anError| self assert: (anError messageText = 'Invalid Cart')]. ! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 23:40:47'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'n 6/24/2019 11:02:10'!
+testCannotAddBooksToInexistantCart
+	
+	|aCartId unaCaraInterna |
+	unaCaraInterna _ ApiRestInterna withCatalog: testObjectsFactory defaultCatalog merchatProcessor:self andValidator: self.
+	aCartId _ 1.
+	self should: [unaCaraInterna add: (testObjectsFactory itemSellByTheStore) toCart: aCartId withQuantity: 4.] raise: Error withExceptionDo: [:anError| self assert: (anError messageText = 'Inexistant Cart Id')]. ! !
+
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/23/2019 23:40:47'!
 testCannotCheckoutWithExpiredCard
 	
 	|aCartId unaCaraInterna clienteID password |
@@ -96,7 +101,7 @@ testCannotCheckoutWithExpiredCard
 	self should: [unaCaraInterna checkOutCart: aCartId withCard: 1231231231231233 thatExpires: (testObjectsFactory monthAYearAgo)  andBelongsTo: 'Pepe' ] raise: Error withExceptionDo: [:anError| self assert: (anError messageText = (Cashier canNotChargeAnExpiredCreditCardErrorMessage))]. 
 	 ! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 23:19:57'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/23/2019 23:19:57'!
 testCannotCheckoutWithInvalidCard
 	
 	|aStore aCartId unaCaraInterna clienteID password |
@@ -110,7 +115,7 @@ testCannotCheckoutWithInvalidCard
 	self should: [unaCaraInterna checkOutCart: aCartId withCard: 123 thatExpires: (Date tomorrow )  andBelongsTo: 'Pepe' ] raise: Error withExceptionDo: [:anError| self assert: (anError messageText = 'Número de tarjeta inválido')]. 
 	 ! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 00:14:33'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/24/2019 00:14:33'!
 testCannotCreateCartWithInvalidUser
 	
 	|unaCaraInterna clienteID password |
@@ -127,7 +132,7 @@ testCannotCreateCartWithInvalidUser
 	 
 	! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 23:46:46'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/23/2019 23:46:46'!
 testCartCanBeBought
 	
 	|aCartId unaCaraInterna clienteID password aTransactionId |
@@ -142,7 +147,7 @@ testCartCanBeBought
 	
 	self deny: aTransactionId isNil! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 01:20:10'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/24/2019 01:20:10'!
 testExpiredCartCannotBeBought
 	
 	|aCartId unaCaraInterna clienteID password aTransactionId aCart |
@@ -159,7 +164,7 @@ testExpiredCartCannotBeBought
 	self should: [aTransactionId _ unaCaraInterna checkOutCart: aCartId withCard: 1231231231231233 thatExpires: (testObjectsFactory monthToday)  andBelongsTo: 'Pepe'.] raise: Error withExceptionDo: [:anError| self assert: (anError messageText = 'Invalid Cart')]. 
 	self assert: aTransactionId isNil! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 01:22:48'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/24/2019 01:22:48'!
 testExpiredCartCannotListed
 	
 	|aCartId unaCaraInterna clienteID password aListOfItems aCart |
@@ -176,7 +181,7 @@ testExpiredCartCannotListed
 	self should: [aListOfItems _ unaCaraInterna listCart: aCartId.] raise: Error withExceptionDo: [:anError| self assert: (anError messageText = 'Invalid Cart')]. 
 	self assert: aListOfItems isNil! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 23:08:25'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/23/2019 23:08:25'!
 testNewApiRestInternaHasNoCarts
 	
 	| unaInterfaz|
@@ -184,7 +189,7 @@ testNewApiRestInternaHasNoCarts
 	
 	self assert: (unaInterfaz listCarts isEmpty).! !
 
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 01:31:08'!
+!ApiRestInternaTest methodsFor: 'test' stamp: 'ML 6/24/2019 01:31:08'!
 testSoldCartCannorBeListed
 	
 	|aCartId unaCaraInterna clienteID password aListOfItems |
@@ -200,10 +205,6 @@ testSoldCartCannorBeListed
 	self should: [aListOfItems _ unaCaraInterna listCart: aCartId.] raise: Error withExceptionDo: [:anError| self assert: (anError messageText = 'Invalid Cart')]. 
 	
 	self assert: aListOfItems isNil! !
-
-!ApiRestInternaTest methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 23:01:21'!
-validate: aClienteID withPassword: aPassword 
-	^validatorBehavior value: aClienteID value: aPassword ! !
 
 
 !classDefinition: #CartTest category: #TusLibros!
@@ -461,7 +462,18 @@ Object subclass: #ApiRestInterna
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 00:32:43'!
+!ApiRestInterna methodsFor: 'testing' stamp: 'ML 6/24/2019 01:27:47'!
+isCartValid: aCartID
+	
+	|aCart|
+	aCart _ carts at: aCartID ifAbsent: [self error:'Inexistant Cart Id'].
+	aCart isInvalid ifTrue: [
+		carts removeKey: aCartID.
+		self error:'Invalid Cart'.
+		]! !
+
+
+!ApiRestInterna methodsFor: 'cart' stamp: 'ML 6/24/2019 00:32:43'!
 add: aBook toCart: aCartID withQuantity: aQuantity
 	|aCart|
 	self isCartValid: aCartID.
@@ -470,7 +482,57 @@ add: aBook toCart: aCartID withQuantity: aQuantity
 
 	self update: aCartID withCart: aCart at: DateAndTime now! !
 
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 01:38:18'!
+!ApiRestInterna methodsFor: 'cart' stamp: 'ML 6/24/2019 00:33:59'!
+createCartOf: aClienteID withPass: aPassword
+	| aCart cartID |
+	userValidator validate: aClienteID withPassword: aPassword .
+	cartID _ self generateCartID.
+	aCart _ Cart acceptingItemsOf: generalCatalog for: aClienteID .
+	self update: cartID withCart: aCart at: DateAndTime now.
+	^ cartID ! !
+
+!ApiRestInterna methodsFor: 'cart' stamp: 'ML 6/21/2019 20:42:03'!
+generateCartID
+	
+	lastCartId _ lastCartId +1.
+	^ lastCartId! !
+
+!ApiRestInterna methodsFor: 'cart' stamp: 'ML 6/24/2019 00:34:18'!
+listCart: aCartID
+	|aCart|
+	self isCartValid: aCartID.
+	aCart _ carts at: aCartID.
+	self update: aCartID withCart: aCart at: DateAndTime now.
+	^aCart getAllItems.! !
+
+!ApiRestInterna methodsFor: 'cart' stamp: 'ML 6/23/2019 22:13:20'!
+listCarts
+	^ carts ! !
+
+!ApiRestInterna methodsFor: 'cart' stamp: 'ML 6/24/2019 00:10:24'!
+listPurchasesOf: aClientID withPassword: aPassword
+	|saleList bagOfSales total|
+	
+	userValidator validate: aClientID withPassword: aPassword.
+	bagOfSales _ Bag new.
+	total  _ 0.
+	saleList _ generalSalesBook at:aClientID.
+	
+	saleList do: [:aSale | 
+		bagOfSales addAll: aSale items.
+		total _ total + aSale total.
+		].
+	
+	^Sale of: total withItems: bagOfSales .! !
+
+!ApiRestInterna methodsFor: 'cart' stamp: 'ML 6/24/2019 00:33:40'!
+update: aCartId withCart: aCart at: aDateTime
+	
+	aCart  setLastACtivity: aDateTime.
+	carts at: aCartId put: aCart.! !
+
+
+!ApiRestInterna methodsFor: 'checkout' stamp: 'ML 6/24/2019 01:38:18'!
 checkOutCart: aCartID withCard: aCardNumber thatExpires: aMonthOfYear andBelongsTo: aName
 	|aCreditCard aCashier aCart aSalesBook|
 
@@ -490,28 +552,14 @@ checkOutCart: aCartID withCard: aCardNumber thatExpires: aMonthOfYear andBelongs
 	carts at: aCartID put: aCart . 
 	^ self generateTransactionID .! !
 
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 00:33:59'!
-createCartOf: aClienteID withPass: aPassword
-	| aCart cartID |
-	userValidator validate: aClienteID withPassword: aPassword .
-	cartID _ self generateCartID.
-	aCart _ Cart acceptingItemsOf: generalCatalog for: aClienteID .
-	self update: cartID withCart: aCart at: DateAndTime now.
-	^ cartID ! !
-
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/21/2019 20:42:03'!
-generateCartID
-	
-	lastCartId _ lastCartId +1.
-	^ lastCartId! !
-
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/21/2019 20:42:20'!
+!ApiRestInterna methodsFor: 'checkout' stamp: 'ML 6/21/2019 20:42:20'!
 generateTransactionID
 	
 	lastTransactionId _ lastTransactionId +1.
 	^ lastTransactionId! !
 
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 23:00:45'!
+
+!ApiRestInterna methodsFor: 'initialization' stamp: 'ML 6/23/2019 23:00:45'!
 initializeWithCatalog: aCatalog merchatProcessor: aMerchantProcessor andValidator: aUserValidator
 	carts _ Dictionary new.
 	generalCatalog _ aCatalog.
@@ -520,50 +568,6 @@ initializeWithCatalog: aCatalog merchatProcessor: aMerchantProcessor andValidato
 	lastTransactionId _ 0.
 	merchantProcessor _ aMerchantProcessor.
 	userValidator _ aUserValidator .! !
-
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 01:27:47'!
-isCartValid: aCartID
-	
-	|aCart|
-	aCart _ carts at: aCartID ifAbsent: [self error:'Inexistant Cart Id'].
-	aCart isInvalid ifTrue: [
-		carts removeKey: aCartID.
-		self error:'Invalid Cart'.
-		]! !
-
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 00:34:18'!
-listCart: aCartID
-	|aCart|
-	self isCartValid: aCartID.
-	aCart _ carts at: aCartID.
-	self update: aCartID withCart: aCart at: DateAndTime now.
-	^aCart getAllItems.! !
-
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/23/2019 22:13:20'!
-listCarts
-	^ carts ! !
-
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 00:10:24'!
-listPurchasesOf: aClientID withPassword: aPassword
-	|saleList bagOfSales total|
-	
-	userValidator validate: aClientID withPassword: aPassword.
-	bagOfSales _ Bag new.
-	total  _ 0.
-	saleList _ generalSalesBook at:aClientID.
-	
-	saleList do: [:aSale | 
-		bagOfSales addAll: aSale items.
-		total _ total + aSale total.
-		].
-	
-	^Sale of: total withItems: bagOfSales .! !
-
-!ApiRestInterna methodsFor: 'as yet unclassified' stamp: 'ML 6/24/2019 00:33:40'!
-update: aCartId withCart: aCart at: aDateTime
-	
-	aCart  setLastACtivity: aDateTime.
-	carts at: aCartId put: aCart.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -737,7 +741,6 @@ initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor r
 	merchantProcessor := aMerchantProcessor.
 	salesBook := aSalesBook! !
 
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Cashier class' category: #TusLibros!
@@ -807,7 +810,7 @@ initializeExpiringOn: aMonth withNumber: aNumber
 	number _ aNumber.! !
 
 
-!CreditCard methodsFor: 'as yet unclassified' stamp: 'ML 6/21/2019 21:42:47'!
+!CreditCard methodsFor: 'observadores' stamp: 'ML 6/21/2019 21:42:47'!
 number
 	^ number.! !
 
@@ -830,12 +833,6 @@ Object subclass: #Sale
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!Sale methodsFor: 'total' stamp: 'HernanWilkinson 6/17/2013 18:48'!
-total
-	
-	^ total! !
-
-
 !Sale methodsFor: 'initialization' stamp: 'ML 6/21/2019 20:07:06'!
 initializeTotal: aTotal withItems: someItems
 
@@ -843,9 +840,14 @@ initializeTotal: aTotal withItems: someItems
 	items _ someItems.! !
 
 
-!Sale methodsFor: 'as yet unclassified' stamp: 'ML 6/21/2019 20:34:54'!
+!Sale methodsFor: 'observadores' stamp: 'ML 6/21/2019 20:34:54'!
 items
 	^items.! !
+
+!Sale methodsFor: 'observadores' stamp: 'HernanWilkinson 6/17/2013 18:48'!
+total
+	
+	^ total! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
