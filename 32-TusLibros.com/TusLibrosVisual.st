@@ -1,69 +1,28 @@
 !classDefinition: #TusLibrosClientWindow category: #TusLibrosVisual!
 Panel subclass: #TusLibrosClientWindow
-	instanceVariableNames: 'userTextBox passTextBox user password'
+	instanceVariableNames: 'userTextBox passTextBox user password clientPurchasesList'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibrosVisual'!
 
-!TusLibrosClientWindow methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 11:45:18'!
-build1stRow
-	| firstRowLayout |
-		
-	userTextBox := TextModelMorph textProvider: self model textGetter: #userName textSetter: #userName: . 
-	userTextBox textMorph setProperty: #keyStroke: toValue: [ :key | userTextBox textMorph acceptContents ] .
-	userTextBox  borderWidth: 1; borderColor: Color skyBlue.
-		
-	firstRowLayout := LayoutMorph newRow.
-	firstRowLayout separation: 20;
-	padding: #left;
-	addMorph: (StringMorph contents:'Enter user:        ');
-	addMorph: userTextBox.
-	^firstRowLayout.! !
+!TusLibrosClientWindow methodsFor: 'refresh' stamp: 'n 7/10/2019 22:45:58'!
+refreshPurchasesList
+	clientPurchasesList updateList.
+! !
 
-!TusLibrosClientWindow methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 19:35:04'!
-build2ndRow
-	| secondRowLayout |
-	
-	passTextBox := TextModelMorph textProvider: self model textGetter: #password textSetter: #password:. 
-	passTextBox textMorph setProperty: #keyStroke: toValue: [ :key | passTextBox textMorph acceptContents ] .
-	passTextBox  borderWidth: 1; borderColor: Color skyBlue.
-		
-	secondRowLayout := LayoutMorph newRow.
-	secondRowLayout separation: 20;
-	padding: #left;
-	addMorph: (StringMorph contents:'Enter password:');
-	addMorph: passTextBox.
-	^secondRowLayout.! !
 
-!TusLibrosClientWindow methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 19:35:19'!
-build3rdRow
-	| sendRequestButton thirdRowLayout |
-	
-	sendRequestButton := PluggableButtonMorph model: self model stateGetter: nil  action: #sendRequestCreateCart  label: 'Create Cart'.
-		
-	thirdRowLayout := LayoutMorph newRow.
-	thirdRowLayout separation: 20;
-	padding: #left;
- 	addMorph: sendRequestButton.
-	^thirdRowLayout.! !
-
-!TusLibrosClientWindow methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 11:40:50'!
+!TusLibrosClientWindow methodsFor: 'initialization' stamp: 'n 7/10/2019 23:17:40'!
 buildMorphicWindow
 		
 	self layoutMorph beColumn;
 	separation: 15;
 	padding: #left;
-	addMorph: self build1stRow;
-	addMorph: self build2ndRow;
-	addMorph: self build3rdRow.! !
+	addMorph: self clientRow;
+	addMorph: self passwordRow;
+	addMorph: self buttonsRow;
+	addMorph: self purchasesRow.! !
 
-!TusLibrosClientWindow methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 22:31:20'!
-defaultExtent
-
-	^ 630@435
-	! !
-
-!TusLibrosClientWindow methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 23:28:15'!
+!TusLibrosClientWindow methodsFor: 'initialization' stamp: 'n 7/10/2019 22:45:58'!
 initializeWith: aTitle
 
 	self titleMorph showButtonsNamed: #( close collapse ).
@@ -74,7 +33,80 @@ initializeWith: aTitle
 	self openInWorld.
 	self yourself.
 			
-	"self model when: #newSubstringsArrived send: #refreshSubstringList to: self."! !
+	self model when: #newSubstringsArrived send: #refreshPurchasesList to: self.! !
+
+
+!TusLibrosClientWindow methodsFor: 'rows' stamp: 'n 7/10/2019 23:17:08'!
+buttonsRow
+	| sendRequestButton thirdRowLayout listPurchasesButton|
+	
+	sendRequestButton := PluggableButtonMorph model: self model stateGetter: nil  action: #sendRequestCreateCart  label: 'Create Cart'.
+	listPurchasesButton := PluggableButtonMorph model: self model stateGetter: nil  action: #sendRequestListPurchases  label: 'List Purchases'.
+		
+	thirdRowLayout := LayoutMorph newRow.
+	thirdRowLayout separation: 10;
+	padding: #left;
+ 	addMorph: sendRequestButton;
+	addMorph: listPurchasesButton.
+	^thirdRowLayout.! !
+
+!TusLibrosClientWindow methodsFor: 'rows' stamp: 'n 7/10/2019 23:15:00'!
+clientRow
+	| firstRowLayout |
+		
+	userTextBox := TextModelMorph textProvider: self model textGetter: #clientName textSetter: #clientName: . 
+	userTextBox textMorph setProperty: #keyStroke: toValue: [ :key | userTextBox textMorph acceptContents ] .
+	userTextBox  borderWidth: 1; borderColor: Color skyBlue.
+		
+	firstRowLayout := LayoutMorph newRow.
+	firstRowLayout separation: 10;
+	padding: #left;
+	addMorph: (StringMorph contents:'Enter user:        ');
+	addMorph: userTextBox.
+	^firstRowLayout.! !
+
+!TusLibrosClientWindow methodsFor: 'rows' stamp: 'n 7/10/2019 23:16:50'!
+passwordRow
+	| secondRowLayout |
+	
+	passTextBox := TextModelMorph textProvider: self model textGetter: #clientPassword textSetter: #clientPassword:. 
+	passTextBox textMorph setProperty: #keyStroke: toValue: [ :key | passTextBox textMorph acceptContents ] .
+	passTextBox  borderWidth: 1; borderColor: Color skyBlue.
+		
+	secondRowLayout := LayoutMorph newRow.
+	secondRowLayout separation: 10;
+	padding: #left;
+	addMorph: (StringMorph contents:'Enter password:');
+	addMorph: passTextBox.
+	^secondRowLayout.! !
+
+!TusLibrosClientWindow methodsFor: 'rows' stamp: 'n 7/10/2019 23:17:40'!
+purchasesRow
+	| firstColumnLayoutOfSecondRow rowLayoutOfSecondRow|
+	
+	clientPurchasesList := PluggableListMorph model: self model listGetter: #purchasesList indexGetter: #purchasesListIndex indexSetter: #purchasesListIndex:.
+	clientPurchasesList  borderColor: Color skyBlue.
+	clientPurchasesList  borderWidth: 1.
+	
+	firstColumnLayoutOfSecondRow := LayoutMorph newColumn.
+	firstColumnLayoutOfSecondRow separation: 5;
+	padding: #left;
+	addMorph: (StringMorph contents:'Purchases');
+	addMorph: clientPurchasesList.
+
+	rowLayoutOfSecondRow := LayoutMorph newRow.
+	rowLayoutOfSecondRow separation: 5;
+	padding: #left;
+	addMorph: (StringMorph contents:'ListPurchases:        ');
+	addMorph: firstColumnLayoutOfSecondRow.
+		
+	^rowLayoutOfSecondRow.! !
+
+
+!TusLibrosClientWindow methodsFor: 'settings' stamp: 'n 7/10/2019 22:19:50'!
+defaultExtent
+
+	^ 600@600! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -90,62 +122,24 @@ open
 
 !classDefinition: #TusLibrosClientWindowCartOperator category: #TusLibrosVisual!
 Panel subclass: #TusLibrosClientWindowCartOperator
-	instanceVariableNames: 'userTextBox passTextBox booksInCart booksList'
+	instanceVariableNames: 'booksInCart booksList ownerTextBox cardTextBox bookTextBox expirationDateTextBox'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibrosVisual'!
 
-!TusLibrosClientWindowCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:55:51'!
-build1stColumn2ndRow
-	| firstColumnLayoutOfSecondRow |
-	
-	booksInCart := PluggableListMorph model: self model listGetter: #booksList indexGetter: #booksListIndex indexSetter: #booksListIndex:.
-	booksInCart  borderColor: Color skyBlue.
-	booksInCart  borderWidth: 1.
-		
-	firstColumnLayoutOfSecondRow := LayoutMorph newColumn.
-	firstColumnLayoutOfSecondRow separation: 5;
-	padding: #left;
-	addMorph: (StringMorph contents:'Books');
-	addMorph: booksInCart.
-		
-	^firstColumnLayoutOfSecondRow.
-	! !
-
-!TusLibrosClientWindowCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 22:22:02'!
-build1stRow
-	| firstRowLayout sendRequestButton |
-	
-	sendRequestButton := PluggableButtonMorph model: self model stateGetter: nil  action: #sendRequestAddToCart  label: 'Add To Cart'.
-
-	userTextBox := TextModelMorph textProvider: self model textGetter: #aBook textSetter: #aBook: . 
-	userTextBox textMorph setProperty: #keyStroke: toValue: [ :key | userTextBox textMorph acceptContents ] .
-	userTextBox  borderWidth: 1; borderColor: Color skyBlue.
-		
-	firstRowLayout := LayoutMorph newRow.
-	firstRowLayout separation: 20;
-	padding: #left;
-	addMorph: (StringMorph contents:'AddBook:        ');
-	addMorph: userTextBox;
- 	addMorph: sendRequestButton.
-	^firstRowLayout.! !
-
-!TusLibrosClientWindowCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:58:15'!
+!TusLibrosClientWindowCartOperator methodsFor: 'initialization' stamp: 'n 7/10/2019 23:16:20'!
 buildMorphicWindow
 		
 	self layoutMorph beColumn;
 	separation: 15;
 	padding: #left;
-	addMorph: self build1stRow;
-	addMorph: self build1stColumn2ndRow.! !
-
-!TusLibrosClientWindowCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:18:19'!
-defaultExtent
-
-	^ 630@435
+	addMorph: self addingRow;
+	addMorph: self listCartRow;
+	addMorph: self cardsRow;
+	addMorph: self checkoutRow.
 	! !
 
-!TusLibrosClientWindowCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:40:03'!
+!TusLibrosClientWindowCartOperator methodsFor: 'initialization' stamp: 'ML 7/10/2019 19:20:11'!
 initializeFor: cartId with: webClient andTitle: aTitle.
 
 	self titleMorph showButtonsNamed: #( close collapse ).
@@ -154,20 +148,109 @@ initializeFor: cartId with: webClient andTitle: aTitle.
 	self morphExtent: (self defaultExtent).
 	self buildMorphicWindow.
 	self openInWorld.
-	self yourself.
-			
-	"self model when: #newSubstringsArrived send: #refreshSubstringList to: self."! !
+	self yourself.		
+	self model when: #newSubstringsArrived send: #refreshBookList to: self.! !
+
+
+!TusLibrosClientWindowCartOperator methodsFor: 'settings' stamp: 'n 7/10/2019 20:56:37'!
+defaultExtent
+
+	^ 1200@600
+	! !
+
+
+!TusLibrosClientWindowCartOperator methodsFor: 'refresh' stamp: 'ML 7/10/2019 19:44:45'!
+refreshBookList
+	booksInCart updateList.
+! !
+
+
+!TusLibrosClientWindowCartOperator methodsFor: 'rows' stamp: 'n 7/10/2019 23:14:27'!
+addingRow
+	| firstRowLayout sendRequestButton |
+	
+	sendRequestButton := PluggableButtonMorph model: self model stateGetter: nil  action: #sendRequestAddToCart  label: 'Add To Cart'.
+
+	bookTextBox := TextModelMorph textProvider: self model textGetter: #itemToAdd textSetter: #itemToAdd: . 
+	bookTextBox textMorph setProperty: #keyStroke: toValue: [ :key | bookTextBox textMorph acceptContents ] .
+	bookTextBox  borderWidth: 1; borderColor: Color skyBlue.
+		
+	firstRowLayout := LayoutMorph newRow.
+	firstRowLayout separation: 20;
+	padding: #left;
+	addMorph: (StringMorph contents:'AddBook:        ');
+	addMorph: bookTextBox;
+ 	addMorph: sendRequestButton.
+	^firstRowLayout.! !
+
+!TusLibrosClientWindowCartOperator methodsFor: 'rows' stamp: 'n 7/10/2019 23:16:08'!
+cardsRow
+	| secondRowLayout |
+	
+	cardTextBox := TextModelMorph textProvider: self model textGetter: #cardNumber textSetter: #cardNumber:. 
+	cardTextBox textMorph setProperty: #keyStroke: toValue: [ :key | cardTextBox textMorph acceptContents ] .
+	cardTextBox  borderWidth: 1; borderColor: Color skyBlue.
+
+	ownerTextBox := TextModelMorph textProvider: self model textGetter: #clientName textSetter: #clientName:. 
+	ownerTextBox textMorph setProperty: #keyStroke: toValue: [ :key | ownerTextBox textMorph acceptContents ] .
+	ownerTextBox borderWidth: 1; borderColor: Color skyBlue.
+
+	expirationDateTextBox := TextModelMorph textProvider: self model textGetter: #expirationCardDate textSetter: #expirationCardDate:. 
+	expirationDateTextBox textMorph setProperty: #keyStroke: toValue: [ :key | expirationDateTextBox textMorph acceptContents ] .
+	expirationDateTextBox borderWidth: 1; borderColor: Color skyBlue.
+		
+	secondRowLayout := LayoutMorph newRow.
+	secondRowLayout separation: 10;
+	padding: #left;
+	addMorph: (StringMorph contents:'Enter owner name:');
+	addMorph: ownerTextBox;
+	addMorph: (StringMorph contents:'Enter card number:');
+	addMorph: cardTextBox;
+	addMorph: (StringMorph contents:'Enter expitarion date:');
+	addMorph: expirationDateTextBox.
+
+	^secondRowLayout.! !
+
+!TusLibrosClientWindowCartOperator methodsFor: 'rows' stamp: 'n 7/10/2019 23:16:20'!
+checkoutRow
+	| firstRowLayout sendRequestButton |
+	
+	sendRequestButton := PluggableButtonMorph model: self model stateGetter: nil  action: #sendRequestCheckout  label: 'Checkout'.
+		
+	firstRowLayout := LayoutMorph newRow.
+	firstRowLayout separation: 20;
+	padding: #right;
+ 	addMorph: sendRequestButton.
+	^firstRowLayout.! !
+
+!TusLibrosClientWindowCartOperator methodsFor: 'rows' stamp: 'n 7/10/2019 23:15:52'!
+listCartRow
+	| firstColumnLayoutOfSecondRow rowLayoutOfSecondRow|
+	
+	booksInCart := PluggableListMorph model: self model listGetter: #booksList indexGetter: #booksListIndex indexSetter: #booksListIndex:.
+	booksInCart  borderColor: Color skyBlue.
+	booksInCart  borderWidth: 1.
+	
+	firstColumnLayoutOfSecondRow := LayoutMorph newColumn.
+	firstColumnLayoutOfSecondRow separation: 5;
+	padding: #left;
+	addMorph: (StringMorph contents:'Books');
+	addMorph: booksInCart.
+
+	rowLayoutOfSecondRow := LayoutMorph newRow.
+	rowLayoutOfSecondRow separation: 5;
+	padding: #left;
+	addMorph: (StringMorph contents:'ListCart:        ');
+	addMorph: firstColumnLayoutOfSecondRow.
+		
+	^rowLayoutOfSecondRow.
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TusLibrosClientWindowCartOperator class' category: #TusLibrosVisual!
 TusLibrosClientWindowCartOperator class
 	instanceVariableNames: ''!
-
-!TusLibrosClientWindowCartOperator class methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:18:19'!
-open
-	
-	^self new initializeWith: 'TusLibros: CreateCart'.! !
 
 !TusLibrosClientWindowCartOperator class methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:38:58'!
 openFor: cartId with: webClient
@@ -177,99 +260,210 @@ openFor: cartId with: webClient
 
 !classDefinition: #TusLibrosClientWindowModelCartOperator category: #TusLibrosVisual!
 Panel subclass: #TusLibrosClientWindowModelCartOperator
-	instanceVariableNames: 'userTextBox passTextBox booksList webClient cartId book booksListIndex'
+	instanceVariableNames: 'userTextBox passTextBox webClient cartId cardNumber clientName itemToAdd itemsInCartList itemsInCartListIndex expirationCardDate'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibrosVisual'!
 
-!TusLibrosClientWindowModelCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:49:09'!
-aBook
-	^book.! !
-
-!TusLibrosClientWindowModelCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:49:02'!
-aBook: aBook
-	book _ aBook.
-	^true.! !
-
-!TusLibrosClientWindowModelCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:55:11'!
-booksList
-	^booksList! !
-
-!TusLibrosClientWindowModelCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:53:33'!
-booksListIndex
-	^ booksListIndex! !
-
-!TusLibrosClientWindowModelCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 22:31:22'!
+!TusLibrosClientWindowModelCartOperator methodsFor: 'setters' stamp: 'n 7/10/2019 23:02:51'!
 booksListIndex: aBooksList
-	booksListIndex _ aBooksList.
+	itemsInCartListIndex _ aBooksList.
 	^true! !
 
-!TusLibrosClientWindowModelCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 22:35:20'!
+!TusLibrosClientWindowModelCartOperator methodsFor: 'setters' stamp: 'n 7/10/2019 23:10:07'!
+cardNumber: aNumber
+	cardNumber _ aNumber.
+	^ true.! !
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'setters' stamp: 'n 7/10/2019 23:10:57'!
+clientName: anOwnerName
+	clientName _ anOwnerName.
+	^true.! !
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'setters' stamp: 'n 7/10/2019 23:10:32'!
+expirationCardDate: anExpitarionDate
+	expirationCardDate _ anExpitarionDate.
+	^true.! !
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'setters' stamp: 'n 7/10/2019 23:07:20'!
+itemToAdd: aBook
+	itemToAdd _ aBook.
+	^true.! !
+
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'initialization' stamp: 'n 7/10/2019 23:22:14'!
 initializeFor: aCartId with: aWebClient
 	
 	webClient _ aWebClient.
 	cartId _ aCartId.
-	booksListIndex _ 0.
-	book _ ''.
-	booksList _ OrderedCollection new.! !
+	itemsInCartListIndex _ 0.
+	itemToAdd _ ''.
+	itemsInCartList _ OrderedCollection new.
+	cardNumber _ ''.
+	clientName _ ''.
+	expirationCardDate _ ''.! !
 
-!TusLibrosClientWindowModelCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 22:27:26'!
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'getters' stamp: 'n 7/10/2019 23:02:31'!
+booksList
+	^itemsInCartList! !
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'getters' stamp: 'n 7/10/2019 23:02:51'!
+booksListIndex
+	^ itemsInCartListIndex! !
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'getters' stamp: 'n 7/10/2019 23:09:53'!
+cardNumber
+	^cardNumber! !
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'getters' stamp: 'n 7/10/2019 23:10:47'!
+clientName
+	^clientName! !
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'getters' stamp: 'n 7/10/2019 23:10:22'!
+expirationCardDate
+	^expirationCardDate! !
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'getters' stamp: 'n 7/10/2019 23:07:08'!
+itemToAdd
+	^itemToAdd.! !
+
+
+!TusLibrosClientWindowModelCartOperator methodsFor: 'request' stamp: 'n 7/10/2019 23:02:31'!
 sendRequestAddToCart
-	|listRequestResponse addRequestResponse|
-	addRequestResponse _ webClient sendRequestAdd: 1 of: book toCartIdentifiedAs: cartId.
-	self halt.
+	|listRequestResponse addRequestResponse division counter lastDivision internalCounter|
+	addRequestResponse _ webClient sendRequestAdd: 1 of: itemToAdd toCartIdentifiedAs: cartId.
 	listRequestResponse _ webClient sendRequestListCartIdentifiedAs: cartId.
+	itemsInCartList _ OrderedCollection new.
+	division _ OrderedCollection new.
+	division add: 0.
+	counter _ 0.
+	internalCounter _ 0.
+	listRequestResponse do: [:aChar |
+		counter _ counter +1.
+		(aChar = $|) ifTrue: 
+		[
+			internalCounter _ internalCounter +1.
+			(internalCounter = 2) ifTrue: 
+			[
+			division add: counter.
+			internalCounter _ 0.
+			].
+		].
+	].
+	lastDivision _ division at: (division size).
+	1 to: division size do: 
+	[:index | 
+		((division at: index) = lastDivision) ifTrue: [
+			itemsInCartList add: (listRequestResponse copyFrom: ((division at: index) +1)  to: listRequestResponse size).
+		] ifFalse: [
+			itemsInCartList add: (listRequestResponse copyFrom: ((division at: index) +1)  to: ((division at: (index +1)))-1).
+		].
+	].
 	self triggerEvent: #newSubstringsArrived with: self.! !
 
-!TusLibrosClientWindowModelCartOperator methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:42:51'!
+!TusLibrosClientWindowModelCartOperator methodsFor: 'request' stamp: 'n 7/10/2019 23:03:04'!
 sendRequestCheckout
+	|response|
+	response _ webClient sendRequestCheckOutCartIdentifiedAs: cartId withCreditCardNumbered: cardNumber ownedBy: clientName expiringOn: expirationCardDate.
 
-	"cartId := webClient sendRequestCheckOutCartIdentifiedAs:  withCreditCardNumbered:  ownedBy:  expiringOn:"
-	
 	self triggerEvent: #newSubstringsArrived with: self.! !
 
 
 !classDefinition: #TusLibrosClientWindowModel category: #TusLibrosVisual!
 Object subclass: #TusLibrosClientWindowModel
-	instanceVariableNames: 'webClient clientPassword clientName cartId'
+	instanceVariableNames: 'webClient clientPassword clientName cartId purchasesList purchasesListIndex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibrosVisual'!
 
-!TusLibrosClientWindowModel methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:36:04'!
+!TusLibrosClientWindowModel methodsFor: 'initialization' stamp: 'n 7/10/2019 22:18:40'!
 initialize
 
 	webClient := TusLibrosWebClient new.
 	cartId _ ''.
 	clientPassword _ ''.
-	clientName _ ''.! !
+	clientName _ ''.
+	purchasesListIndex _ 0.
+	purchasesList _ OrderedCollection new.! !
 
-!TusLibrosClientWindowModel methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 23:24:24'!
-password
-	^clientPassword! !
 
-!TusLibrosClientWindowModel methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 23:24:24'!
-password: aPassword
+!TusLibrosClientWindowModel methodsFor: 'requests' stamp: 'n 7/10/2019 22:43:31'!
+sendRequestListPurchases
+	|listRequestResponse division counter lastDivision internalCounter|
+	listRequestResponse _ webClient sendRequestListPurchasesOf: clientName authenticatingWith: clientPassword.
+	
+	self triggerEvent: #newSubstringsArrived with: self.
+  
+	purchasesList _ OrderedCollection new.
+	division _ OrderedCollection new.
+	division add: 0.
+	counter _ 0.
+	internalCounter _ 0.
+	listRequestResponse do: [:aChar |
+	counter _ counter +1.
+	(aChar = $|) ifTrue: 
+	[
+	internalCounter _ internalCounter +1.
+      (internalCounter = 2) ifTrue: 
+      [
+      division add: counter.
+      internalCounter _ 0.
+      ].
+    ].
+  ].
+  lastDivision _ division at: (division size).
+  1 to: division size do: 
+  [:index | 
+    ((division at: index) = lastDivision) ifTrue: [
+      purchasesList add: ('Total: ',(listRequestResponse copyFrom: ((division at: index) +1)  to: listRequestResponse size)).
+    ] ifFalse: [
+      purchasesList add: (listRequestResponse copyFrom: ((division at: index) +1)  to: ((division at: (index +1)))-1).
+    ].
+  ].
+  self triggerEvent: #newSubstringsArrived with: self.! !
+
+
+!TusLibrosClientWindowModel methodsFor: 'setters' stamp: 'n 7/10/2019 23:06:51'!
+clientName: aUser
+	clientName _ aUser.
+	^true.! !
+
+!TusLibrosClientWindowModel methodsFor: 'setters' stamp: 'n 7/10/2019 23:05:34'!
+clientPassword: aPassword
 	clientPassword _ aPassword.
 	^true.! !
 
-!TusLibrosClientWindowModel methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 21:37:52'!
+!TusLibrosClientWindowModel methodsFor: 'setters' stamp: 'n 7/10/2019 22:17:20'!
+purchasesListIndex: aListIndex
+	purchasesListIndex _ aListIndex.
+	^true.! !
+
+
+!TusLibrosClientWindowModel methodsFor: 'getters' stamp: 'n 7/10/2019 23:06:37'!
+clientName
+	^clientName
+	! !
+
+!TusLibrosClientWindowModel methodsFor: 'getters' stamp: 'n 7/10/2019 23:05:11'!
+clientPassword
+	^clientPassword! !
+
+!TusLibrosClientWindowModel methodsFor: 'getters' stamp: 'n 7/10/2019 22:16:39'!
+purchasesList
+	^purchasesList! !
+
+!TusLibrosClientWindowModel methodsFor: 'getters' stamp: 'n 7/10/2019 22:16:54'!
+purchasesListIndex
+	^purchasesListIndex! !
+
+!TusLibrosClientWindowModel methodsFor: 'getters' stamp: 'n 7/10/2019 23:33:16'!
 sendRequestCreateCart
 
 	cartId := webClient sendRequestCreateCart: clientName withPassword: clientPassword.
 	
 	TusLibrosClientWindowCartOperator openFor: cartId with: webClient.
 	self triggerEvent: #newSubstringsArrived with: self.! !
-
-!TusLibrosClientWindowModel methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 23:24:40'!
-userName
-	^clientName
-	! !
-
-!TusLibrosClientWindowModel methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 23:24:40'!
-userName: aUser
-	clientName _ aUser.
-	^true.! !
 
 
 !classDefinition: #TusLibrosServer category: #TusLibrosVisual!
@@ -352,20 +546,20 @@ initializeAuthenticatingWith: aValidUsersAndPasswords acceptingItemsOf: aCatalog
 			request send404Response: (anError messageText) ]]."! !
 
 
-!TusLibrosServer methodsFor: 'facade' stamp: 'n 7/8/2019 21:04:18'!
+!TusLibrosServer methodsFor: 'facade' stamp: 'ML 7/10/2019 18:45:31'!
 add: quantity of: bookId toCartIdentifiedAs: cartId
-	[facade add: quantity of: bookId toCartIdentifiedAs: cartId.
+	[facade add: (quantity asInteger) of: bookId toCartIdentifiedAs: (cartId asInteger) .
 		^ '0|OK'.] 
 	on: Error 
 	do: [:anError| ^ '1|',anError messageText.].! !
 
-!TusLibrosServer methodsFor: 'facade' stamp: 'n 7/8/2019 21:27:05'!
+!TusLibrosServer methodsFor: 'facade' stamp: 'n 7/10/2019 21:51:24'!
 checkOutCartIdentifiedAs: cartId withCreditCardNumbered: ccn ownedBy: cco expiringOn: cced
 	|checkoutId aMonthOfYear aMonth aYear|
 	[	aMonth _ ((cced copyFrom: 1 to: 2) asInteger).
 		aYear _ (('20', (cced copyFrom: 4 to: 5)) asInteger).
 		aMonthOfYear _ Month month: aMonth year: aYear.
-		checkoutId _ facade checkOutCartIdentifiedAs: cartId withCreditCardNumbered: ccn ownedBy: cco expiringOn: aMonthOfYear.
+		checkoutId _ (facade checkOutCartIdentifiedAs: (cartId asInteger) withCreditCardNumbered: ccn ownedBy: cco expiringOn: aMonthOfYear) total.
 		^ '0|',(checkoutId asString).] 
 	on: Error 
 	do: [:anError| ^ '1|',anError messageText.].! !
@@ -379,10 +573,10 @@ createCartFor: aUser authenticatedWith: aPassword
 	do: [:anError| ^ '1|',anError messageText.].
 	! !
 
-!TusLibrosServer methodsFor: 'facade' stamp: 'n 7/8/2019 21:26:39'!
+!TusLibrosServer methodsFor: 'facade' stamp: 'ML 7/10/2019 19:11:05'!
 listCartIdentifiedAs: cartId
 	|items keys stream|
-	[items _ (facade listCartIdentifiedAs: cartId) contents.
+	[items _ (facade listCartIdentifiedAs: (cartId asInteger)) contents.
 		keys _ items keys.
 		stream _ String streamContents: 
 			[:str |
@@ -425,12 +619,7 @@ Object subclass: #TusLibrosWebClient
 	poolDictionaries: ''
 	category: 'TusLibrosVisual'!
 
-!TusLibrosWebClient methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 21:41:53'!
-port
-	
-	^port ifNil: [port:=8080].! !
-
-!TusLibrosWebClient methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 23:04:03'!
+!TusLibrosWebClient methodsFor: 'senders' stamp: 'n 7/10/2019 21:02:58'!
 sendRequestAdd: quantity of: bookId toCartIdentifiedAs: cartId
 
 	| fieldDict resp operationSuccess respContent responseMessage |
@@ -441,7 +630,6 @@ sendRequestAdd: quantity of: bookId toCartIdentifiedAs: cartId
 		
 	resp:= WebClient htmlSubmit: (self url,'/addToCart') fields: fieldDict.
 	
-	"revisar"
 	resp isSuccess 
 		ifTrue:[ 
 			respContent _ (resp content). 
@@ -453,10 +641,10 @@ sendRequestAdd: quantity of: bookId toCartIdentifiedAs: cartId
 			]
 		ifFalse:[^self error: resp content]! !
 
-!TusLibrosWebClient methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 21:58:57'!
+!TusLibrosWebClient methodsFor: 'senders' stamp: 'n 7/10/2019 21:48:24'!
 sendRequestCheckOutCartIdentifiedAs: cartId withCreditCardNumbered: ccn ownedBy: cco expiringOn: cced
 
-	| fieldDict resp|
+	| fieldDict resp operationSuccess respContent responseMessage |
 	
 	fieldDict := Dictionary newFromPairs: {'cartId'. cartId.}.
 	fieldDict at: 'ccn' put: ccn.
@@ -465,12 +653,19 @@ sendRequestCheckOutCartIdentifiedAs: cartId withCreditCardNumbered: ccn ownedBy:
 
 	resp:= WebClient htmlSubmit: (self url,'/checkoutCart') fields: fieldDict.
 	
-	"revisar"
 	resp isSuccess 
-		ifTrue:[^(WebUtils jsonDecode: ((resp content) readStream)) asOrderedCollection .] 
+		ifTrue:[ 
+			respContent _ (resp content). 
+			operationSuccess _ respContent copyFrom: 1 to: 1.
+			responseMessage _ respContent copyFrom: 3 to: (respContent size). 
+			self halt.
+			(operationSuccess = '0') 
+				ifTrue: [^responseMessage.] 
+				ifFalse: [^self error: responseMessage.]
+			]
 		ifFalse:[^self error: resp content]! !
 
-!TusLibrosWebClient methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 22:37:37'!
+!TusLibrosWebClient methodsFor: 'senders' stamp: 'n 7/9/2019 22:37:37'!
 sendRequestCreateCart: clientId withPassword: aPassword
 
 	| fieldDict resp respContent responseMessage operationSuccess|
@@ -491,36 +686,52 @@ sendRequestCreateCart: clientId withPassword: aPassword
 			]
 		ifFalse:[^self error: resp content]! !
 
-!TusLibrosWebClient methodsFor: 'as yet unclassified' stamp: 'n 7/9/2019 22:25:08'!
+!TusLibrosWebClient methodsFor: 'senders' stamp: 'n 7/10/2019 21:03:13'!
 sendRequestListCartIdentifiedAs: cartId
 
-	| fieldDict resp|
+	| fieldDict resp respContent operationSuccess responseMessage|
 	
 	fieldDict := Dictionary newFromPairs: {'cartId'. cartId.}.
 	
 	resp:= WebClient htmlSubmit: (self url,'/listCart') fields: fieldDict.
 	
-	"revisar"
 	resp isSuccess 
-		ifTrue:[^(WebUtils jsonDecode: ((resp content) readStream)) asOrderedCollection .] 
+		ifTrue:[ 
+			respContent _ (resp content). 
+			operationSuccess _ respContent copyFrom: 1 to: 1.
+			responseMessage _ respContent copyFrom: 3 to: (respContent size). 
+			(operationSuccess = '0') 
+				ifTrue: [^responseMessage.] 
+				ifFalse: [^self error: responseMessage.]
+			]
 		ifFalse:[^self error: resp content]! !
 
-!TusLibrosWebClient methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 22:01:01'!
+!TusLibrosWebClient methodsFor: 'senders' stamp: 'n 7/10/2019 21:49:35'!
 sendRequestListPurchasesOf: aUser authenticatingWith: aPassword
 
-	| fieldDict resp|
-	
+	| fieldDict resp respContent operationSuccess responseMessage|
 	fieldDict := Dictionary newFromPairs: {'clientId'. aUser.}.
 	fieldDict at: 'password' put: aPassword.
-	
 	resp:= WebClient htmlSubmit: (self url,'/listPurchases') fields: fieldDict.
-	
-	"revisar"
+
 	resp isSuccess 
-		ifTrue:[^(WebUtils jsonDecode: ((resp content) readStream)) asOrderedCollection .] 
+		ifTrue:[ 
+			respContent _ (resp content). 
+			operationSuccess _ respContent copyFrom: 1 to: 1.
+			responseMessage _ respContent copyFrom: 3 to: (respContent size). 
+			(operationSuccess = '0') 
+				ifTrue: [^responseMessage.] 
+				ifFalse: [^self error: responseMessage.]
+			]
 		ifFalse:[^self error: resp content]! !
 
-!TusLibrosWebClient methodsFor: 'as yet unclassified' stamp: 'n 7/8/2019 21:42:23'!
+
+!TusLibrosWebClient methodsFor: 'settings' stamp: 'n 7/8/2019 21:41:53'!
+port
+	
+	^port ifNil: [port:=8080].! !
+
+!TusLibrosWebClient methodsFor: 'settings' stamp: 'n 7/8/2019 21:42:23'!
 url
 	
 	^'http://localhost:', self port asString! !
